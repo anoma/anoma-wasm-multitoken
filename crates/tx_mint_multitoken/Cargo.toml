@@ -1,6 +1,6 @@
 [package]
-name = "tx_example"
-authors = ["Heliax AG <hello@heliax.dev>"]
+name = "tx_mint_multitoken"
+authors = ["Heliax <hello@heliax.dev>"]
 license = "GPL-3.0"
 version = "0.1.0"
 edition = "2021"
@@ -13,6 +13,7 @@ anoma_tx_prelude = {git = "https://github.com/anoma/anoma"}
 borsh = "0.9.0"
 wee_alloc = "0.4.5"
 getrandom = { version = "0.2", features = ["custom"] }
+eyre = "0.6.8"
 
 [dev-dependencies]
 anoma_tests = {git = "https://github.com/anoma/anoma"}

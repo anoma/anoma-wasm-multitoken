@@ -1,5 +1,5 @@
-# anoma-wasm-workspace
+# anoma-wasm-multitoken
 
-> :warning: This repo is experimental and shouldn't be relied upon!
+> :warning: This repo is work in progress, experimental and shouldn't be relied upon!
 
-An example Cargo workspace for building wasms for use with [Anoma](https://github.com/anoma/anoma).
+Validity predicate and transactions for a variable supply multitoken account. This example is geared around how the validity predicate for [the Ethereum bridge](https://specs.anoma.net/master/architecture/interoperability/ethereum-bridge.html) will work, in that minting of tokens must happen in correspondence to the state of some other account, and burning of tokens will take place on demand by the owner of those tokens.

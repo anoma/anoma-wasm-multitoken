@@ -1,8 +1,14 @@
 use anoma_tx_prelude::*;
+use eyre::Result;
 
 #[transaction]
 fn apply_tx(tx_data: Vec<u8>) {
+    apply_tx_aux(tx_data).unwrap();
+}
+
+fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     log_string(format!("apply_tx called with data: {:#?}", tx_data));
+    Ok(())
 }
 
 #[cfg(test)]
