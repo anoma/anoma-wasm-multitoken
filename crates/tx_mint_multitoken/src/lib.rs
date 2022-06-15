@@ -13,7 +13,8 @@ fn log(msg: &str) {
 #[transaction]
 fn apply_tx(tx_data: Vec<u8>) {
     if let Err(err) = apply_tx_aux(tx_data) {
-        log(&format!("ERROR: {:?}", err))
+        log(&format!("ERROR: {:?}", err));
+        panic!("{:?}", err)
     }
 }
 
