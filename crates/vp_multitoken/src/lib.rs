@@ -1,6 +1,8 @@
 use anoma_vp_prelude::*;
 use eyre::Result;
 
+pub mod keys;
+
 const VP_NAME: &str = "vp_multitoken";
 
 fn log(msg: &str) {
@@ -27,20 +29,17 @@ fn validate_tx_aux(
     keys_changed: BTreeSet<storage::Key>,
     verifiers: BTreeSet<Address>,
 ) -> Result<bool> {
-    log_string(format!(
+    log(&format!(
         "validate_tx called with addr: {}, key_changed: {:#?}, tx_data: \
          {:#?}, verifiers: {:?}",
         addr, keys_changed, tx_data, verifiers
     ));
 
     for key in keys_changed.iter() {
-        let key = key.to_string();
-        let pre: Option<u64> = read_pre(&key);
-        let post: Option<u64> = read_post(&key);
-        log_string(format!(
-            "validate_tx key: {}, pre: {:#?}, post: {:#?}",
-            key, pre, post,
-        ));
+        if !keys::is_balance_key(key) {
+            log(&format!("Rejecting change to key {}", key));
+            return Ok(false);
+        }
     }
     Ok(true)
 }
