@@ -24,8 +24,8 @@ release:
 test-runners:
 	$(cargo) \
 		build \
-			--target x86-64-unknown-linux-gnu \
-			--target-dir build/x86-64-unknown-linux-gnu \
+			--target x86_64-unknown-linux-gnu \
+			--target-dir build/x86_64-unknown-linux-gnu \
 			--package 'test_runners'
 			--out-dir build/test
 
