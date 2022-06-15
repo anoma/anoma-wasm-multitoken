@@ -2,8 +2,8 @@ use anoma_tx_prelude::{
     log_string, read, token::Amount, transaction, write, BorshDeserialize, SignedTxData,
 };
 use eyre::{eyre, Result, WrapErr};
+use shared::data;
 
-pub mod data;
 const TX_NAME: &str = "tx_mint_multitoken";
 
 fn log(msg: &str) {

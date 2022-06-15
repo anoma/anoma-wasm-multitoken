@@ -2238,6 +2238,11 @@ dependencies = [
 [[package]]
 name = "shared"
 version = "0.1.0"
+dependencies = [
+ "anoma_tx_prelude",
+ "borsh",
+ "serde",
+]
 
 [[package]]
 name = "signature"
