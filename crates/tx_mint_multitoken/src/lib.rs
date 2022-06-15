@@ -1,7 +1,5 @@
-use std::str::FromStr;
-
 use anoma_tx_prelude::{
-    log_string, read, token::Amount, transaction, write, BorshDeserialize, Key, SignedTxData,
+    log_string, read, token::Amount, transaction, write, BorshDeserialize, SignedTxData,
 };
 use eyre::{eyre, Result, WrapErr};
 
@@ -115,8 +113,6 @@ mod tests {
 
         let env = tx_host_env::take();
         assert_eq!(env.all_touched_storage_keys().len(), 1);
-        assert!(env
-            .all_touched_storage_keys()
-            .contains(&mint.balance_key()));
+        assert!(env.all_touched_storage_keys().contains(&mint.balance_key()));
     }
 }

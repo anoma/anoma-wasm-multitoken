@@ -18,7 +18,7 @@ pub struct MintMultitoken {
 
 impl MintMultitoken {
     pub fn balance_key(&self) -> Key {
-        Key::from_str(&self.multitoken_address.as_str())
+        Key::from_str(self.multitoken_address.as_str())
             .unwrap()
             .join(&self.multitoken_key)
             .push(&self.token_id)
