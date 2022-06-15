@@ -47,3 +47,33 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
+
+  build-debug:
+    name: Build debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - uses: codota/toolchain@v1
+      - name: Build wasms
+        run: make debug
+      - name: Publish wasms
+        uses: actions/upload-artifact@v3
+        with:
+          name: debug-wasms
+          path: build/debug
+
+  build-release:
+    name: Build release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - uses: codota/toolchain@v1
+      - name: Build wasms
+        run: make release
+      - name: Publish wasms
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-wasms
+          path: build/release
