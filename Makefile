@@ -22,11 +22,11 @@ release:
 			--out-dir build/release/
 
 test-runners:
-	$(cargo) \
+	$(cargo) -Z unstable-options \
 		build \
 			--target x86_64-unknown-linux-gnu \
 			--target-dir build/x86_64-unknown-linux-gnu \
-			--package 'test_runners'
+			--package 'test_runners' \
 			--out-dir build/test
 
 .PHONY : debug release
