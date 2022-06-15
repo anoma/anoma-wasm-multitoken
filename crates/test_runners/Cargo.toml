@@ -1,0 +1,10 @@
+[package]
+name = "test_runners"
+authors = ["Heliax <hello@heliax.dev>"]
+license = "GPL-3.0"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "mint_100_red_tokens"
+path = "src/bin/mint_100_red_tokens/main.rs"

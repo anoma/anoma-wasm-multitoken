@@ -78,3 +78,17 @@ jobs:
         with:
           name: release-wasms
           path: build/release
+
+  build-test-runners:
+    name: Build test-runners
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Build test runners
+        run: make test-runners
+      - name: Publish wasms
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-runners
+          path: build/test
