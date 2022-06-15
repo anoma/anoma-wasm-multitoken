@@ -16,7 +16,7 @@ fn validate_tx(
 ) -> bool {
     if let Err(err) = validate_tx_aux(tx_data, addr, keys_changed, verifiers) {
         log(&format!("ERROR: {:?}", err));
-        return false
+        return false;
     }
     true
 }

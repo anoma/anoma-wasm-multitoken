@@ -1,23 +1,26 @@
 # vp_multitoken
 
-This validity predicate keeps track of a multitoken structured like:
+This validity predicate acts to maintain a ledger of multiple tokens under a single Anoma account, specifically Anoma tokens corresponding to ERC20 tokens on the Ethereum blockchain.
 
+## Storage structure
 ```
-# $owner: Address
-# $multitoken_id: String
-
-/multitoken/$multitoken_id/balance/$owner : Amount
+/erc20/$token_id/balance/$owner : Amount
 ```
 
-Other storage key changes are not allowed.
+Storage keys other than ones above may not be written to.
 
-It maintains the following invariants:
+### $token_id
+This should be the Ethereum address of an ERC20 token.
+### $owner
+This can be any arbitrary Anoma bech32m address.
 
-- every `$multitoken_id/balance/$owner` >= 0, always
-- if a `$multitoken_id/balance/$owner_a` changes by `n: Amount` (n != 0):
+## Invariants
+
+- if a `/erc20/$token_id/balance/$owner` exists, it must be >= 0
+- if `/erc20/$token_id/balance/$owner_a` changes by `n: Amount` (n != 0):
   - if n > 0, exactly one of the following:
-    - some other`$multitoken_id/balance/$owner_b` changes by `-n` (`$owner_a` != `$owner_b`), the transaction is signed by `$owner_b`
-    - no other `$multitoken_id/balance/$owner` changes, and the transaction is signed by the protocol
+    - some other `/erc20/$token_id/balance/$owner_b` changes by `-n` (`$owner_a` != `$owner_b`), and the transaction is signed by `$owner_b`
+    - there are no other storage changes under this account, and the transaction is signed by the protocol
   - if n < 0, exactly one of the following:
-    - some `$multitoken_id/balance/$owner_b` changes by `-n` (`$owner_a` != `$owner_b`), the transaction is signed by `$owner_a`
-    - no other `$multitoken_id/balance/$owner` changes, and the transaction is signed by `$owner_a`
+    - some other `/erc20/$token_id/balance/$owner_b` changes by `-n` (`$owner_a` != `$owner_b`), the transaction is signed by `$owner_a`
+    - there are no other storage changes under this account, and the transaction is signed by `$owner_a`
