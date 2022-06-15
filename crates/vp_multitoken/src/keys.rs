@@ -2,7 +2,7 @@
 use std::str::FromStr;
 
 use anoma_vp_prelude::storage::{DbKeySeg, Key};
-use shared::BALANCE_KEY_SEGMENT;
+use shared::keys::BALANCE_KEY_SEGMENT;
 
 const MULTITOKEN_KEY_SEGMENT: &str = "ERC20";
 

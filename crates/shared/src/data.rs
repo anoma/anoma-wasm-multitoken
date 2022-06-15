@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::BALANCE_KEY_SEGMENT;
+use crate::keys::BALANCE_KEY_SEGMENT;
 use anoma_tx_prelude::token::Amount;
 use anoma_tx_prelude::BorshDeserialize;
 use anoma_tx_prelude::Key;
