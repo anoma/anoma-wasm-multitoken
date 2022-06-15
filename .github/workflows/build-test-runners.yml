@@ -1,0 +1,19 @@
+on:
+  - push
+
+name: build-test-runners
+
+jobs:
+  build-test-runners:
+    name: Build test-runners
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Build test runners
+        run: make test-runners
+      - name: Publish test runners
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-runners
+          path: build/test
