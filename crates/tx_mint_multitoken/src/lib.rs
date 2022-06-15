@@ -1,18 +1,10 @@
-use anoma_tx_prelude::token::Amount;
-use anoma_tx_prelude::Key;
-use anoma_tx_prelude::*;
-use borsh::BorshSerialize;
-use borsh::{de::BorshDeserialize, BorshSchema};
+use anoma_tx_prelude::{
+    log_string, read, token::Amount, transaction, write, BorshDeserialize, SignedTxData,
+};
 use eyre::{eyre, Result, WrapErr};
-use serde::{Deserialize, Serialize};
 
+pub mod data;
 const TX_NAME: &str = "tx_mint_multitoken";
-
-#[derive(Serialize, Deserialize, BorshSerialize, BorshDeserialize, BorshSchema)]
-struct MintMultitoken {
-    balance: Key,
-    amount: Amount,
-}
 
 fn log(msg: &str) {
     log_string(format!("[{}] {}", TX_NAME, msg))
@@ -37,7 +29,7 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     };
     log(&format!("got data - {} bytes", data.len()));
 
-    let mint_multitoken = MintMultitoken::try_from_slice(&data[..])
+    let mint_multitoken = data::MintMultitoken::try_from_slice(&data[..])
         .wrap_err_with(|| "deserializing to MintMultitoken")?;
     log("deserialized MintMultitoken");
     let balance: Option<Amount> = read(mint_multitoken.balance.to_string());
@@ -65,6 +57,7 @@ mod tests {
     use anoma::proto::Tx;
     use anoma::types::key::common::SecretKey;
     use anoma_tests::tx::*;
+    use anoma_tx_prelude::{BorshSerialize, Key};
     use rand::prelude::ThreadRng;
 
     use super::*;
@@ -109,7 +102,7 @@ mod tests {
             .push(&OWNER_ADDRESS.to_owned())
             .unwrap();
         let amount = Amount::from(100);
-        let unsigned_data = MintMultitoken {
+        let unsigned_data = data::MintMultitoken {
             balance: balance.clone(),
             amount,
         }
