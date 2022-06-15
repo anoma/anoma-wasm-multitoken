@@ -1,5 +1,5 @@
 use anoma_tx_prelude::*;
-use eyre::{Result, WrapErr};
+use eyre::{eyre, Result, WrapErr};
 
 const TX_NAME: &str = "tx_mint_multitoken";
 
@@ -14,9 +14,14 @@ fn apply_tx(tx_data: Vec<u8>) {
 
 fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     log(&format!("called with tx_data - {} bytes", tx_data.len()));
-    let _signed = SignedTxData::try_from_slice(&tx_data[..])
+    let signed = SignedTxData::try_from_slice(&tx_data[..])
         .wrap_err_with(|| "deserializing to SignedTxData")?;
     log("deserialized SignedTxData");
+    let data = match signed.data {
+        Some(data) => data,
+        None => return Err(eyre!("no data provided")),
+    };
+    log(&format!("got data - {} bytes", data.len()));
     Ok(())
 }
 
