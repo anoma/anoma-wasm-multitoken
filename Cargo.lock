@@ -2791,6 +2791,7 @@ dependencies = [
  "getrandom",
  "rand",
  "serde",
+ "shared",
  "wee_alloc",
 ]
 

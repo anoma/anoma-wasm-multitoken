@@ -6,6 +6,7 @@ use anoma_tx_prelude::Key;
 use borsh::BorshSchema;
 use borsh::BorshSerialize;
 use serde::{Deserialize, Serialize};
+use shared::BALANCE_KEY_SEGMENT;
 
 #[derive(Serialize, Deserialize, BorshSerialize, BorshDeserialize, BorshSchema)]
 pub struct MintMultitoken {
@@ -23,7 +24,7 @@ impl MintMultitoken {
             .join(&self.multitoken_key)
             .push(&self.token_id)
             .unwrap()
-            .push(&"balance".to_owned())
+            .push(&BALANCE_KEY_SEGMENT.to_owned())
             .unwrap()
             .push(&self.owner_address)
             .unwrap()

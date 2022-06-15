@@ -15,6 +15,7 @@ wee_alloc = "0.4.5"
 getrandom = { version = "0.2", features = ["custom"] }
 eyre = "0.6.8"
 serde = {version = "1.0.125", features = ["derive"]}
+shared = { path = "../shared" }
 
 [dev-dependencies]
 anoma_tests = {git = "https://github.com/anoma/anoma"}
