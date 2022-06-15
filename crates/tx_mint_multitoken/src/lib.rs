@@ -1,5 +1,7 @@
+use std::str::FromStr;
+
 use anoma_tx_prelude::{
-    log_string, read, token::Amount, transaction, write, BorshDeserialize, SignedTxData,
+    log_string, read, token::Amount, transaction, write, BorshDeserialize, Key, SignedTxData,
 };
 use eyre::{eyre, Result, WrapErr};
 
@@ -32,7 +34,9 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     let mint_multitoken = data::MintMultitoken::try_from_slice(&data[..])
         .wrap_err_with(|| "deserializing to MintMultitoken")?;
     log("deserialized MintMultitoken");
-    let balance: Option<Amount> = read(mint_multitoken.balance.to_string());
+
+    let balance_key = mint_multitoken.balance_key().to_string();
+    let balance: Option<Amount> = read(&balance_key);
     let mut balance = match balance {
         Some(amount) => {
             log(&format!("existing balance found - {}", amount));
@@ -45,7 +49,7 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     };
     // TODO: this may panic - test what happens when overflow
     balance.receive(&mint_multitoken.amount);
-    write(mint_multitoken.balance.to_string(), balance);
+    write(&balance_key, balance);
 
     Ok(())
 }
@@ -93,21 +97,16 @@ mod tests {
     fn test_minting_100_red_tokens() {
         tx_host_env::init();
 
-        let balance = Key::from_str(MULTITOKEN_ADDRESS)
-            .unwrap()
-            .push(&MULTITOKEN_KEY_SEGMENT.to_owned())
-            .unwrap()
-            .push(&TOKEN_KEY_SEGMENT.to_owned())
-            .unwrap()
-            .push(&OWNER_ADDRESS.to_owned())
-            .unwrap();
         let amount = Amount::from(100);
-        let unsigned_data = data::MintMultitoken {
-            balance: balance.clone(),
+        let mint = data::MintMultitoken {
+            multitoken_address: MULTITOKEN_ADDRESS.to_owned(),
+            multitoken_key: Key::from_str(MULTITOKEN_KEY_SEGMENT).unwrap(),
+            token_id: TOKEN_KEY_SEGMENT.to_owned(),
+            owner_address: OWNER_ADDRESS.to_owned(),
             amount,
-        }
-        .try_to_vec()
-        .unwrap();
+        };
+
+        let unsigned_data = mint.try_to_vec().unwrap();
 
         let sk = random_key();
         let tx_data = Tx::new(vec![], Some(unsigned_data)).sign(&sk).data.unwrap();
@@ -116,6 +115,8 @@ mod tests {
 
         let env = tx_host_env::take();
         assert_eq!(env.all_touched_storage_keys().len(), 1);
-        assert!(env.all_touched_storage_keys().contains(&balance));
+        assert!(env
+            .all_touched_storage_keys()
+            .contains(&mint.balance_key()));
     }
 }
