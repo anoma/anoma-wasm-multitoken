@@ -1,7 +1,18 @@
+use anoma_tx_prelude::token::Amount;
+use anoma_tx_prelude::Key;
 use anoma_tx_prelude::*;
+use borsh::de::BorshDeserialize;
+use borsh::BorshSerialize;
 use eyre::{eyre, Result, WrapErr};
+use serde::{Deserialize, Serialize};
 
 const TX_NAME: &str = "tx_mint_multitoken";
+
+#[derive(Serialize, Deserialize, BorshSerialize, BorshDeserialize)]
+struct MintMultitoken {
+    balance: Key,
+    amount: Amount,
+}
 
 fn log(msg: &str) {
     log_string(format!("[{}] {}", TX_NAME, msg))
@@ -17,11 +28,13 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     let signed = SignedTxData::try_from_slice(&tx_data[..])
         .wrap_err_with(|| "deserializing to SignedTxData")?;
     log("deserialized SignedTxData");
+
     let data = match signed.data {
         Some(data) => data,
         None => return Err(eyre!("no data provided")),
     };
     log(&format!("got data - {} bytes", data.len()));
+
     Ok(())
 }
 

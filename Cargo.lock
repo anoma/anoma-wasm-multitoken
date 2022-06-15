@@ -2786,6 +2786,7 @@ dependencies = [
  "eyre",
  "getrandom",
  "rand",
+ "serde",
  "wee_alloc",
 ]
 
