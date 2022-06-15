@@ -1,6 +1,12 @@
 use anoma_vp_prelude::*;
 use eyre::Result;
 
+const VP_NAME: &str = "vp_multitoken";
+
+fn log(msg: &str) {
+    log_string(format!("[{}] {}", VP_NAME, msg))
+}
+
 #[validity_predicate]
 fn validate_tx(
     tx_data: Vec<u8>,
@@ -8,7 +14,11 @@ fn validate_tx(
     keys_changed: BTreeSet<storage::Key>,
     verifiers: BTreeSet<Address>,
 ) -> bool {
-    validate_tx_aux(tx_data, addr, keys_changed, verifiers).unwrap()
+    if let Err(err) = validate_tx_aux(tx_data, addr, keys_changed, verifiers) {
+        log(&format!("ERROR: {:?}", err));
+        return false
+    }
+    true
 }
 
 fn validate_tx_aux(
