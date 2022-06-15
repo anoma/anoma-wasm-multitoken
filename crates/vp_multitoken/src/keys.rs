@@ -2,9 +2,9 @@
 use std::str::FromStr;
 
 use anoma_vp_prelude::storage::{DbKeySeg, Key};
+use shared::BALANCE_KEY_SEGMENT;
 
 const MULTITOKEN_KEY_SEGMENT: &str = "ERC20";
-const BALANCE_KEY_SEGMENT: &str = "balance";
 
 pub fn balance(multitoken_addr: &str, token_id: &str, owner_addr: &str) -> Key {
     Key::from_str(multitoken_addr)

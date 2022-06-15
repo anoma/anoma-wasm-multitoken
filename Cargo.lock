@@ -2236,6 +2236,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "shared"
+version = "0.1.0"
+
+[[package]]
 name = "signature"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2880,6 +2884,7 @@ dependencies = [
  "borsh",
  "eyre",
  "getrandom",
+ "shared",
  "wee_alloc",
 ]
 
