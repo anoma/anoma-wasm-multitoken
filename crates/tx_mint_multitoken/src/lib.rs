@@ -54,12 +54,11 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
 
     use anoma::proto::Tx;
     use anoma::types::key::common::SecretKey;
     use anoma_tests::tx::*;
-    use anoma_tx_prelude::{BorshSerialize, Key};
+    use anoma_tx_prelude::BorshSerialize;
     use rand::prelude::ThreadRng;
 
     use super::*;
@@ -98,7 +97,7 @@ mod tests {
         let amount = Amount::from(100);
         let mint = data::MintMultitoken {
             multitoken_address: MULTITOKEN_ADDRESS.to_owned(),
-            multitoken_key: Key::from_str(MULTITOKEN_KEY_SEGMENT).unwrap(),
+            multitoken_key: MULTITOKEN_KEY_SEGMENT.to_owned(),
             token_id: TOKEN_KEY_SEGMENT.to_owned(),
             owner_address: OWNER_ADDRESS.to_owned(),
             amount,

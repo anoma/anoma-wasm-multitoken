@@ -1,6 +1,4 @@
-use std::str::FromStr;
-
-use crate::keys::BALANCE_KEY_SEGMENT;
+use crate::keys;
 use anoma_tx_prelude::token::Amount;
 use anoma_tx_prelude::BorshDeserialize;
 use anoma_tx_prelude::Key;
@@ -11,7 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, BorshSerialize, BorshDeserialize, BorshSchema)]
 pub struct MintMultitoken {
     pub multitoken_address: String,
-    pub multitoken_key: Key,
+    pub multitoken_key: String,
     pub token_id: String,
     pub owner_address: String,
     pub amount: Amount,
@@ -19,14 +17,11 @@ pub struct MintMultitoken {
 
 impl MintMultitoken {
     pub fn balance_key(&self) -> Key {
-        Key::from_str(self.multitoken_address.as_str())
-            .unwrap()
-            .join(&self.multitoken_key)
-            .push(&self.token_id)
-            .unwrap()
-            .push(&BALANCE_KEY_SEGMENT.to_owned())
-            .unwrap()
-            .push(&self.owner_address)
-            .unwrap()
+        keys::balance(
+            self.multitoken_address.as_str(),
+            self.multitoken_key.as_str(),
+            &self.token_id,
+            &self.owner_address,
+        )
     }
 }
