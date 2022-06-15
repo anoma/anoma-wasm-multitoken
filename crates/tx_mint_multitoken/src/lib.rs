@@ -20,7 +20,9 @@ fn log(msg: &str) {
 
 #[transaction]
 fn apply_tx(tx_data: Vec<u8>) {
-    apply_tx_aux(tx_data).unwrap();
+    if let Err(err) = apply_tx_aux(tx_data) {
+        log(&format!("ERROR: {:?}", err))
+    }
 }
 
 fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
@@ -34,6 +36,22 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
         None => return Err(eyre!("no data provided")),
     };
     log(&format!("got data - {} bytes", data.len()));
+
+    let mint_multitoken = MintMultitoken::try_from_slice(&data[..])
+        .wrap_err_with(|| "deserializing to MintMultitoken")?;
+    log("deserialized MintMultitoken");
+    let amount: Option<Amount> = read(mint_multitoken.balance.to_string());
+    match amount {
+        Some(amount) => {
+            log(&format!(
+                "storage key already has a value present- {}",
+                amount
+            ));
+        }
+        None => {
+            log("no existing value found at storage key");
+        }
+    };
 
     Ok(())
 }
