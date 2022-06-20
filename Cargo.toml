@@ -26,6 +26,16 @@ anoma_vp_prelude = {git = "https://github.com/anoma/anoma?rev=v0.6.0"}
 anoma = {git = "https://github.com/anoma/anoma?rev=v0.6.0"}
 anoma_tests = {git = "https://github.com/anoma/anoma?rev=v0.6.0"}
 
+[profile.dev]
+# smaller and faster wasm (https://rustwasm.github.io/book/reference/code-size.html#compiling-with-link-time-optimizations-lto)
+lto = true
+# tell llvm to optimize for size (https://rustwasm.github.io/book/reference/code-size.html#tell-llvm-to-optimize-for-size-instead-of-speed)
+opt-level = 'z'
+
+[profile.test]
+lto = false
+opt-level = 0
+
 [profile.release]
 # smaller and faster wasm (https://rustwasm.github.io/book/reference/code-size.html#compiling-with-link-time-optimizations-lto)
 lto = true
@@ -33,3 +43,4 @@ lto = true
 panic = "abort"
 # tell llvm to optimize for size (https://rustwasm.github.io/book/reference/code-size.html#tell-llvm-to-optimize-for-size-instead-of-speed)
 opt-level = 'z'
+strip = 'symbols'

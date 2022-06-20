@@ -1,0 +1,27 @@
+[package]
+name = "test_runners"
+authors = ["Heliax <hello@heliax.dev>"]
+license = "GPL-3.0"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+name = "test_runners"
+path = "src/lib/mod.rs"
+
+[[bin]]
+name = "consecutive_mints"
+path = "src/bin/consecutive_mints/main.rs"
+
+[[bin]]
+name = "mint_then_burn"
+path = "src/bin/mint_then_burn/main.rs"
+
+[dependencies]
+shared = { path = "../shared" }
+anoma = {git = "https://github.com/anoma/anoma", features = ["rand"]}
+borsh = "0.9.0"
+rand = "0.8"
+tempfile = "3.3.0"
+eyre = "0.6.8"
+hex = "0.4.3"

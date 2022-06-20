@@ -2,7 +2,7 @@
 name = "vp_multitoken"
 authors = ["Heliax <hello@heliax.dev>"]
 license = "GPL-3.0"
-version = "0.1.0"
+version = "0.0.0"
 edition = "2021"
 
 [lib]
@@ -14,6 +14,7 @@ borsh = "0.9.0"
 wee_alloc = "0.4.5"
 getrandom = { version = "0.2", features = ["custom"] }
 eyre = "0.6.8"
+shared = {path = "../shared" }
 
 [dev-dependencies]
 anoma_tests = {git = "https://github.com/anoma/anoma"}
