@@ -21,26 +21,25 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
 
     let op: multitoken::Op = signed::extract_signed(&tx_data[..])?.data;
 
-    match op {
-        multitoken::Op::Burn(burn) => {
-            let balance_key = burn.balance_key().to_string();
-            let balance: Option<Amount> = read(&balance_key);
-            let mut balance = match balance {
-                Some(amount) => {
-                    log(&format!("existing balance found - {}", amount));
-                    amount
-                }
-                None => {
-                    log("no existing balance found");
-                    Amount::from(0)
-                }
-            };
-            balance.spend(&burn.amount);
-            write(&balance_key, balance);
-            log(&format!("new balance - {}", balance));
-        }
+    let burn = match op {
+        multitoken::Op::Burn(burn) => burn,
         _ => return Err(eyre!("expected a burn operation")),
-    }
+    };
+    let balance_key = burn.balance_key().to_string();
+    let balance: Option<Amount> = read(&balance_key);
+    let mut balance = match balance {
+        Some(amount) => {
+            log(&format!("existing balance found - {}", amount));
+            amount
+        }
+        None => {
+            log("no existing balance found");
+            Amount::from(0)
+        }
+    };
+    balance.spend(&burn.amount);
+    write(&balance_key, balance);
+    log(&format!("new balance - {}", balance));
 
     Ok(())
 }
