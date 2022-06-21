@@ -25,6 +25,14 @@ impl MultitokenAmount {
             &self.owner_address,
         )
     }
+
+    pub fn supply_key(&self) -> Key {
+        keys::supply(
+            self.multitoken_address.as_str(),
+            self.multitoken_path.as_str(),
+            &self.token_id,
+        )
+    }
 }
 
 /// Represents possible transactions that may be made against vp_multitoken
@@ -38,6 +46,8 @@ pub enum Op {
 mod tests {
     use anoma::types::storage::DbKeySeg;
     use anoma_tx_prelude::{token::Amount, Address};
+
+    use crate::keys::SUPPLY_KEY_SEGMENT;
 
     use super::MultitokenAmount;
 
@@ -70,6 +80,29 @@ mod tests {
             token_id == DAI_ERC20_ADDRESS &&
             balance_key_seg == crate::keys::BALANCE_KEY_SEGMENT &&
             owner_addr == &Address::decode(OWNER_ADDRESS).unwrap()
+        ))
+    }
+
+    #[test]
+    pub fn test_supply_key() {
+        let m = MultitokenAmount {
+            multitoken_address: MULTITOKEN_ADDRESS.to_owned(),
+            multitoken_path: MULTITOKEN_PATH.to_owned(),
+            token_id: DAI_ERC20_ADDRESS.to_owned(),
+            owner_address: OWNER_ADDRESS.to_owned(),
+            amount: Amount::from(100),
+        };
+        assert!(matches!(
+            &m.supply_key().segments[..],
+            [
+                DbKeySeg::AddressSeg(multitoken_addr),
+                DbKeySeg::StringSeg(multitoken_path),
+                DbKeySeg::StringSeg(token_id),
+                DbKeySeg::StringSeg(supply_key_seg),
+            ] if multitoken_addr == &Address::decode(MULTITOKEN_ADDRESS).unwrap() &&
+            multitoken_path == MULTITOKEN_PATH &&
+            token_id == DAI_ERC20_ADDRESS &&
+            supply_key_seg == SUPPLY_KEY_SEGMENT
         ))
     }
 }
