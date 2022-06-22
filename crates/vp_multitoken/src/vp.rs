@@ -126,11 +126,11 @@ fn verify_signature_against_pk<B: BorshDeserialize + BorshSerialize>(
     signed: &Signed<B>,
 ) -> Result<bool> {
     let pk_storage_key = pk_key(addr);
-    let pk: Option<common::PublicKey> = read_pre(&pk_storage_key.to_string());
-    let pk = match pk {
-        Some(pk) => pk,
-        None => return Err(eyre!("couldn't read VP's public key from storage")),
+    let pk = match read_bytes_pre(&pk_storage_key.to_string()) {
+        Some(bytes) => bytes,
+        None => return Err(eyre!("{} had no associated public key", VP_NAME)),
     };
+    let pk = common::PublicKey::try_from_slice(&pk[..])?;
     match common::SigScheme::verify_signature(&pk, &signed.data, &signed.sig)
         .wrap_err_with(|| eyre!("verifying signature"))
     {
