@@ -53,10 +53,13 @@ fn validate_tx_aux(
             log("Verified signature of tx_data against the multitoken's public key");
 
             let balance_key = mint.balance_key();
-            if !only_contains(&keys_changed, &balance_key) {
+
+            let mut expected_keys_changed = BTreeSet::<storage::Key>::new();
+            expected_keys_changed.insert(balance_key.clone());
+            if !keys_changed.eq(&expected_keys_changed) {
                 log(&format!(
                     "Expected only {} to have changed, but actual keys changed was: {:?}",
-                    balance_key, &keys_changed
+                    &balance_key, &keys_changed
                 ));
                 return Ok(false);
             }
@@ -100,7 +103,10 @@ fn validate_tx_aux(
             log("Verified signature of tx_data against the multitoken's public key");
 
             let balance_key = burn.balance_key();
-            if !only_contains(&keys_changed, &balance_key) {
+
+            let mut expected_keys_changed = BTreeSet::<storage::Key>::new();
+            expected_keys_changed.insert(balance_key.clone());
+            if !keys_changed.eq(&expected_keys_changed) {
                 log(&format!(
                     "Expected only {} to have changed, but actual keys changed was: {:?}",
                     balance_key, &keys_changed
@@ -143,10 +149,6 @@ fn validate_tx_aux(
     }
 
     Ok(true)
-}
-
-fn only_contains<Orderable: Ord>(set: &BTreeSet<Orderable>, element: &Orderable) -> bool {
-    set.contains(element) && set.len() == 1
 }
 
 fn verify_signature_against_pk<B: BorshDeserialize + BorshSerialize>(
