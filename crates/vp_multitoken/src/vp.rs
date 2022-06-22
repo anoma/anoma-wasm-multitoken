@@ -51,7 +51,10 @@ fn validate_tx_aux(
         multitoken::Op::Mint(ref mint) => {
             log("deserialized Mint operation");
 
-            verify_signature_against_pk(&vp_addr, &signed)?;
+            if !verify_signature_against_pk(&vp_addr, &signed)? {
+                log("Signature did not verify against the multitoken's public key");
+                return Ok(false);
+            };
             log("Verified signature of tx_data against the multitoken's public key");
 
             let balance_key = mint.balance_key();
@@ -85,7 +88,10 @@ fn validate_tx_aux(
         multitoken::Op::Burn(ref burn) => {
             log("deserialized Burn operation");
 
-            verify_signature_against_pk(&vp_addr, &signed)?;
+            if !verify_signature_against_pk(&vp_addr, &signed)? {
+                log("Signature did not verify against the multitoken's public key");
+                return Ok(false);
+            };
             log("Verified signature of tx_data against the multitoken's public key");
 
             let balance_key = burn.balance_key();
@@ -119,16 +125,22 @@ fn validate_tx_aux(
     }
 }
 
+// TODO: right now we can't easily differentiate between a signature not verifying and an error
+// so this only returns Ok(true) or Err(_)
 fn verify_signature_against_pk<B: BorshDeserialize + BorshSerialize>(
     addr: &Address,
     signed: &Signed<B>,
-) -> Result<()> {
+) -> Result<bool> {
     let pk_storage_key = pk_key(addr);
     let pk: Option<common::PublicKey> = read_pre(&pk_storage_key.to_string());
     let pk = match pk {
         Some(pk) => pk,
         None => return Err(eyre!("couldn't read VP's public key from storage")),
     };
-    common::SigScheme::verify_signature(&pk, &signed.data, &signed.sig)
+    match common::SigScheme::verify_signature(&pk, &signed.data, &signed.sig)
         .wrap_err_with(|| eyre!("verifying signature"))
+    {
+        Ok(()) => Ok(true),
+        Err(err) => Err(err),
+    }
 }
