@@ -69,10 +69,7 @@ fn validate_tx_aux(
                 return Ok(false);
             }
 
-            let (balance_pre, balance_post) = match crate::read::amount(&balance_key.to_string()) {
-                Ok((balance_pre, balance_post)) => (balance_pre, balance_post),
-                Err(err) => return Err(err),
-            };
+            let (balance_pre, balance_post) = crate::read::amount(&balance_key.to_string())?;
             log(&format!("pre-existing balance - {}", balance_pre));
             log(&format!("new balance - {}", balance_post));
 
@@ -106,10 +103,7 @@ fn validate_tx_aux(
                 return Ok(false);
             }
 
-            let (balance_pre, balance_post) = match crate::read::amount(&balance_key.to_string()) {
-                Ok((balance_pre, balance_post)) => (balance_pre, balance_post),
-                Err(err) => return Err(err),
-            };
+            let (balance_pre, balance_post) = crate::read::amount(&balance_key.to_string())?;
             log(&format!("pre-existing balance - {}", balance_pre));
             log(&format!("new balance - {}", balance_post));
 
