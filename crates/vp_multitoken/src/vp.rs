@@ -77,6 +77,7 @@ fn validate_tx_aux(
                 log("new balance does not match pre-existing balance with mint applied");
                 return Ok(false);
             }
+            Ok(true)
         }
         multitoken::Op::Burn(ref burn) => {
             log("deserialized Burn operation");
@@ -110,10 +111,9 @@ fn validate_tx_aux(
                 log("new balance does not match pre-existing balance with burn applied");
                 return Ok(false);
             }
+            Ok(true)
         }
     }
-
-    Ok(true)
 }
 
 fn verify_signature_against_pk<B: BorshDeserialize + BorshSerialize>(
