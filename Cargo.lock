@@ -1962,6 +1962,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "retry"
+version = "1.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac95c60a949a63fd2822f4964939662d8f2c16c4fa0624fd954bc6e703b9a3f6"
+dependencies = [
+ "rand",
+]
+
+[[package]]
 name = "ripemd160"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2239,6 +2248,8 @@ dependencies = [
 name = "shared"
 version = "0.1.0"
 dependencies = [
+ "anoma",
+ "anoma_tests",
  "anoma_tx_prelude",
  "borsh",
  "eyre",
@@ -2496,6 +2507,7 @@ dependencies = [
  "eyre",
  "hex",
  "rand",
+ "retry",
  "shared",
  "tempfile",
 ]
@@ -2807,7 +2819,6 @@ dependencies = [
  "anoma_tx_prelude",
  "borsh",
  "eyre",
- "getrandom",
  "rand",
  "serde",
  "shared",
@@ -2823,7 +2834,6 @@ dependencies = [
  "anoma_tx_prelude",
  "borsh",
  "eyre",
- "getrandom",
  "rand",
  "serde",
  "shared",
@@ -2915,11 +2925,12 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 name = "vp_multitoken"
 version = "0.0.0"
 dependencies = [
+ "anoma",
  "anoma_tests",
  "anoma_vp_prelude",
  "borsh",
  "eyre",
- "getrandom",
+ "rand",
  "shared",
  "wee_alloc",
 ]
