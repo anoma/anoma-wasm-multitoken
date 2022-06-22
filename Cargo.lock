@@ -2807,7 +2807,6 @@ dependencies = [
  "anoma_tx_prelude",
  "borsh",
  "eyre",
- "getrandom",
  "rand",
  "serde",
  "shared",
@@ -2823,7 +2822,6 @@ dependencies = [
  "anoma_tx_prelude",
  "borsh",
  "eyre",
- "getrandom",
  "rand",
  "serde",
  "shared",
@@ -2919,7 +2917,6 @@ dependencies = [
  "anoma_vp_prelude",
  "borsh",
  "eyre",
- "getrandom",
  "shared",
  "wee_alloc",
 ]
