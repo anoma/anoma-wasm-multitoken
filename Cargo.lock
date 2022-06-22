@@ -2915,10 +2915,12 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 name = "vp_multitoken"
 version = "0.0.0"
 dependencies = [
+ "anoma",
  "anoma_tests",
  "anoma_vp_prelude",
  "borsh",
  "eyre",
+ "rand",
  "shared",
  "wee_alloc",
 ]

@@ -1,6 +1,6 @@
 use anoma_vp_prelude::{
     key::{common, pk_key, SigScheme},
-    log_string, read_pre, storage, validity_predicate, Address, BTreeSet, BorshDeserialize,
+    log_string, read_bytes_pre, storage, validity_predicate, Address, BTreeSet, BorshDeserialize,
     BorshSerialize, Signed,
 };
 use eyre::{eyre, Context, Result};
@@ -136,5 +136,75 @@ fn verify_signature_against_pk<B: BorshDeserialize + BorshSerialize>(
     {
         Ok(()) => Ok(true),
         Err(err) => Err(err),
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use anoma_tests::{
+        tx::{tx_host_env, TestTxEnv},
+        vp::vp_host_env,
+    };
+    use anoma_vp_prelude::{
+        address, key::RefTo, storage, token::Amount, Address, BTreeSet, BorshSerialize, Signed,
+    };
+    use shared::multitoken;
+
+    use crate::vp::validate_tx;
+
+    use anoma::{proto::Tx, types::key::common::SecretKey};
+    use rand::prelude::ThreadRng;
+
+    fn random_key() -> SecretKey {
+        let mut rng: ThreadRng = rand::thread_rng();
+        let sk: SecretKey = {
+            use anoma::types::key::{ed25519, SecretKey, SigScheme};
+            ed25519::SigScheme::generate(&mut rng).try_to_sk().unwrap()
+        };
+        sk
+    }
+
+    #[test]
+    fn test_mint() {
+        let mut tx_env = TestTxEnv::default();
+
+        let vp_owner = address::testing::established_address_1();
+        let user = address::testing::established_address_2();
+        let token = address::xan();
+        // allowance must be enough to cover the gas costs of any txs made in this test
+        let allowance = Amount::from(10_000_000);
+
+        tx_env.spawn_accounts([&vp_owner, &user, &token]);
+        tx_env.credit_tokens(&user, &token, allowance);
+        let privileged_sk = random_key();
+        tx_env.write_public_key(&vp_owner, &privileged_sk.ref_to());
+
+        let mint = multitoken::MultitokenAmount {
+            multitoken_address: vp_owner.encode(),
+            multitoken_path: "multitoken".to_owned(),
+            token_id: "red".to_owned(),
+            owner_address: user.encode(),
+            amount: Amount::from(50_000_000),
+        };
+        vp_host_env::init_from_tx(vp_owner.clone(), tx_env, |_| {
+            tx_host_env::write(mint.balance_key().to_string(), Amount::from(50_000_000));
+        });
+
+        let vp_env = vp_host_env::take();
+
+        let mint = multitoken::Op::Mint(mint);
+        let mint = Signed::<multitoken::Op>::new(&privileged_sk, mint);
+        let mint = mint.try_to_vec().unwrap();
+        let tx = Tx::new(vec![], Some(mint)).sign(&random_key());
+
+        let keys_changed: BTreeSet<storage::Key> = vp_env.all_touched_storage_keys();
+        let verifiers: BTreeSet<Address> = BTreeSet::default();
+        vp_host_env::set(vp_env);
+        assert!(validate_tx(
+            tx.data.unwrap(),
+            vp_owner,
+            keys_changed,
+            verifiers
+        ));
     }
 }

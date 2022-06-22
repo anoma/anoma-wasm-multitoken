@@ -17,3 +17,5 @@ shared = {path = "../shared" }
 
 [dev-dependencies]
 anoma_tests = {git = "https://github.com/anoma/anoma"}
+anoma = {git = "https://github.com/anoma/anoma"}
+rand = "0.8"
