@@ -1,8 +1,7 @@
 use anoma_vp_prelude::{
     key::{common, pk_key, SigScheme},
-    log_string, read_post, read_pre, storage,
-    token::Amount,
-    validity_predicate, Address, BTreeSet, BorshDeserialize, BorshSerialize, Signed,
+    log_string, read_pre, storage, validity_predicate, Address, BTreeSet, BorshDeserialize,
+    BorshSerialize, Signed,
 };
 use eyre::{eyre, Context, Result};
 use shared::{multitoken, signed};
@@ -64,34 +63,17 @@ fn validate_tx_aux(
                 return Ok(false);
             }
 
-            let balance_pre: Option<Amount> = read_pre(&balance_key.to_string());
-            let balance_pre = match balance_pre {
-                Some(balance) => {
-                    log(&format!("pre-existing balance found - {}", balance));
-                    balance
-                }
-                None => {
-                    log("no pre-existing balance found");
-                    Amount::from(0)
-                }
+            let (balance_pre, balance_post) = match crate::read::amount(&balance_key.to_string()) {
+                Ok((balance_pre, balance_post)) => (balance_pre, balance_post),
+                Err(err) => return Err(err),
             };
+            log(&format!("pre-existing balance - {}", balance_pre));
+            log(&format!("new balance - {}", balance_post));
 
-            let balance_post: Option<Amount> = read_post(&balance_key.to_string());
-            let balance_post = match balance_post {
-                Some(balance) => {
-                    log(&format!("new balance found - {}", balance));
-                    balance
-                }
-                None => {
-                    log("no new balance found");
-                    return Ok(false);
-                }
-            };
-
-            let mut balance = balance_pre;
-            balance.receive(&mint.amount);
-            log(&format!("expected new balance - {}", &balance));
-            if balance != balance_post {
+            let mut balance_calculated = balance_pre;
+            balance_calculated.receive(&mint.amount);
+            log(&format!("expected new balance - {}", &balance_calculated));
+            if balance_calculated != balance_post {
                 log("new balance does not match pre-existing balance with mint applied");
                 return Ok(false);
             }
@@ -114,34 +96,17 @@ fn validate_tx_aux(
                 return Ok(false);
             }
 
-            let balance_pre: Option<Amount> = read_pre(&balance_key.to_string());
-            let balance_pre = match balance_pre {
-                Some(balance) => {
-                    log(&format!("pre-existing balance found - {}", balance));
-                    balance
-                }
-                None => {
-                    log("no pre-existing balance found");
-                    Amount::from(0)
-                }
+            let (balance_pre, balance_post) = match crate::read::amount(&balance_key.to_string()) {
+                Ok((balance_pre, balance_post)) => (balance_pre, balance_post),
+                Err(err) => return Err(err),
             };
+            log(&format!("pre-existing balance - {}", balance_pre));
+            log(&format!("new balance - {}", balance_post));
 
-            let balance_post: Option<Amount> = read_post(&balance_key.to_string());
-            let balance_post = match balance_post {
-                Some(balance) => {
-                    log(&format!("new balance found - {}", balance));
-                    balance
-                }
-                None => {
-                    log("no new balance found");
-                    return Ok(false);
-                }
-            };
-
-            let mut balance = balance_pre;
-            balance.spend(&burn.amount);
-            log(&format!("expected new balance - {}", &balance));
-            if balance != balance_post {
+            let mut balance_calculated = balance_pre;
+            balance_calculated.spend(&burn.amount);
+            log(&format!("expected new balance - {}", &balance_calculated));
+            if balance_calculated != balance_post {
                 log("new balance does not match pre-existing balance with burn applied");
                 return Ok(false);
             }
