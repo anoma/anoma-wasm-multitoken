@@ -2239,6 +2239,7 @@ dependencies = [
 name = "shared"
 version = "0.1.0"
 dependencies = [
+ "anoma",
  "anoma_tx_prelude",
  "borsh",
  "eyre",
