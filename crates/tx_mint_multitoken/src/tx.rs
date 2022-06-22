@@ -27,7 +27,7 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     };
 
     let balance_key = mint.balance_key().to_string();
-    let mut balance = read::amount(&balance_key);
+    let mut balance = read::amount(&balance_key)?;
     log(&format!("existing balance is {}", balance));
     balance.receive(&mint.amount);
     write(&balance_key, balance);

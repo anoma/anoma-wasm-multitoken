@@ -26,7 +26,7 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
         _ => return Err(eyre!("expected a burn operation")),
     };
     let balance_key = burn.balance_key().to_string();
-    let mut balance = read::amount(&balance_key);
+    let mut balance = read::amount(&balance_key)?;
     log(&format!("existing balance is {}", balance));
     balance.spend(&burn.amount);
     write(&balance_key, balance);

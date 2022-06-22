@@ -16,3 +16,4 @@ serde = {version = "1.0.125", features = ["derive"]}
 
 [dev-dependencies]
 anoma = {git = "https://github.com/anoma/anoma"}
+anoma_tests = {git = "https://github.com/anoma/anoma"}
