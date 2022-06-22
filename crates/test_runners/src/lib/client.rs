@@ -92,10 +92,10 @@ impl Client {
 }
 
 /// NB: requires ANOMA_NETWORK_CONFIGS_SERVER in env
-pub fn join_network_or_die(chain_id: &str) {
+pub fn join_network(chain_id: &str) -> Result<std::process::Output, std::io::Error> {
     let mut cmd = Command::new("anomac");
     let cmd = cmd.args(["utils", "join-network", "--chain-id", chain_id]);
-    execute_or_die(cmd);
+    execute(cmd)
 }
 
 pub fn fetch_wasms_or_die(chain_id: &str) {

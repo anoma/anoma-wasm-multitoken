@@ -1,13 +1,21 @@
 use std::path::Path;
 
 use crate::{chain, client, wallet};
+use retry::{delay::Fixed, retry};
 
-pub fn join(chain_id: &str) {
-    client::join_network_or_die(chain_id);
+pub fn join_or_exit(chain_id: &str) {
+    retry(
+        Fixed::from_millis(1000).take(10),
+        || match client::join_network(chain_id) {
+            Ok(_) => Ok("joined chain"),
+            Err(err) => Err(format!("couldn't join chain: {:?}", err)),
+        },
+    )
+    .unwrap();
     client::fetch_wasms_or_die(chain_id);
 }
 
-pub fn ensure_joined(chain_id: &str) {
+pub fn ensure_joined_or_exit(chain_id: &str) {
     let chain_dir = format!(".anoma/{}", chain_id);
     let chain_dir = Path::new(&chain_dir);
     if chain_dir.exists() {
@@ -20,7 +28,7 @@ pub fn ensure_joined(chain_id: &str) {
             "Chain dir {} doesn't exist, will join chain",
             chain_dir.to_string_lossy()
         );
-        chain::join(chain_id);
+        chain::join_or_exit(chain_id);
     }
 }
 
