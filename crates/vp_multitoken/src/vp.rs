@@ -36,12 +36,15 @@ fn validate_tx(
     }
 }
 
+/// Should return an error iff we were unable to validate a transaction due to something unexpected
 fn validate_tx_aux(
     tx_data: Vec<u8>,
     vp_addr: Address,
     keys_changed: BTreeSet<storage::Key>,
     _verifiers: BTreeSet<Address>,
 ) -> Result<bool> {
+    // TODO: could this sometimes be an actual error with the ledger, rather than just tx_data being invalid
+    // so we treat it as an error rather than a reject
     let signed: Signed<multitoken::Op> = signed::extract_signed(&tx_data[..])?;
 
     match signed.data {
