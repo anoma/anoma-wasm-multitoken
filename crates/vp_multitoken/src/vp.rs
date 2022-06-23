@@ -63,8 +63,8 @@ fn validate_tx_aux(
             expected_keys_changed.insert(balance_key.clone());
             if !keys_changed.eq(&expected_keys_changed) {
                 log(&format!(
-                    "Expected only {} to have changed, but actual keys changed was: {:?}",
-                    &balance_key, &keys_changed
+                    "Expected only {:?} to have changed, but actual keys changed was: {:?}",
+                    &expected_keys_changed, &keys_changed
                 ));
                 return Ok(false);
             }
@@ -97,8 +97,8 @@ fn validate_tx_aux(
             expected_keys_changed.insert(balance_key.clone());
             if !keys_changed.eq(&expected_keys_changed) {
                 log(&format!(
-                    "Expected only {} to have changed, but actual keys changed was: {:?}",
-                    balance_key, &keys_changed
+                    "Expected only {:?} to have changed, but actual keys changed was: {:?}",
+                    &expected_keys_changed, &keys_changed
                 ));
                 return Ok(false);
             }
@@ -141,12 +141,14 @@ fn verify_signature_against_pk<B: BorshDeserialize + BorshSerialize>(
 
 #[cfg(test)]
 mod test {
+    use std::str::FromStr;
+
     use anoma_tests::{
         tx::{tx_host_env, TestTxEnv},
         vp::vp_host_env,
     };
     use anoma_vp_prelude::{
-        address, key::RefTo, storage, token::Amount, Address, BTreeSet, BorshSerialize, Signed,
+        address, key::RefTo, storage, token::Amount, Address, BTreeSet, BorshSerialize, Key, Signed,
     };
     use shared::multitoken;
 
@@ -162,6 +164,55 @@ mod test {
             ed25519::SigScheme::generate(&mut rng).try_to_sk().unwrap()
         };
         sk
+    }
+
+    #[test]
+    fn test_mint_disallowed_key_changed() {
+        let mut tx_env = TestTxEnv::default();
+
+        let vp_owner = address::testing::established_address_1();
+        let user = address::testing::established_address_2();
+        let token = address::xan();
+        // allowance must be enough to cover the gas costs of any txs made in this test
+        let allowance = Amount::from(10_000_000);
+
+        tx_env.spawn_accounts([&vp_owner, &user, &token]);
+        tx_env.credit_tokens(&user, &token, allowance);
+        let privileged_sk = random_key();
+        tx_env.write_public_key(&vp_owner, &privileged_sk.ref_to());
+
+        let mint = multitoken::MultitokenAmount {
+            multitoken_address: vp_owner.encode(),
+            multitoken_path: "multitoken".to_owned(),
+            token_id: "red".to_owned(),
+            owner_address: user.encode(),
+            amount: Amount::from(50_000_000),
+        };
+        vp_host_env::init_from_tx(vp_owner.clone(), tx_env, |_| {
+            tx_host_env::write(mint.balance_key().to_string(), Amount::from(50_000_000));
+            let other = Key::from_str(&format!("#{}", vp_owner.encode()))
+                .unwrap()
+                .push(&"some arbitary key segment".to_string())
+                .unwrap();
+            tx_host_env::write(other.to_string(), "some arbitrary value");
+        });
+
+        let vp_env = vp_host_env::take();
+
+        let mint = multitoken::Op::Mint(mint);
+        let mint = Signed::<multitoken::Op>::new(&privileged_sk, mint);
+        let mint = mint.try_to_vec().unwrap();
+        let tx = Tx::new(vec![], Some(mint)).sign(&random_key());
+
+        let keys_changed: BTreeSet<storage::Key> = vp_env.all_touched_storage_keys();
+        let verifiers: BTreeSet<Address> = BTreeSet::default();
+        vp_host_env::set(vp_env);
+        assert!(!validate_tx(
+            tx.data.unwrap(),
+            vp_owner,
+            keys_changed,
+            verifiers
+        ));
     }
 
     #[test]
