@@ -58,9 +58,11 @@ fn validate_tx_aux(
             log("Verified signature of tx_data against the multitoken's public key");
 
             let balance_key = mint.balance_key();
+            let supply_key = mint.supply_key();
 
             let mut expected_keys_changed = BTreeSet::<storage::Key>::new();
             expected_keys_changed.insert(balance_key.clone());
+            expected_keys_changed.insert(supply_key.clone());
             if !keys_changed.eq(&expected_keys_changed) {
                 log(&format!(
                     "Expected only {:?} to have changed, but actual keys changed was: {:?}",
@@ -78,6 +80,18 @@ fn validate_tx_aux(
             log(&format!("expected new balance - {}", &balance_calculated));
             if balance_calculated != balance_post {
                 log("new balance does not match pre-existing balance with mint applied");
+                return Ok(false);
+            }
+
+            let (supply_pre, supply_post) = crate::read::amount(&supply_key.to_string())?;
+            log(&format!("pre-existing supply - {}", supply_pre));
+            log(&format!("new supply - {}", supply_post));
+
+            let mut supply_calculated = supply_pre;
+            supply_calculated.receive(&mint.amount);
+            log(&format!("expected new supply - {}", &supply_calculated));
+            if supply_calculated != supply_post {
+                log("new supply does not match pre-existing supply with mint applied");
                 return Ok(false);
             }
             Ok(true)
@@ -190,6 +204,7 @@ mod test {
         };
         vp_host_env::init_from_tx(vp_owner.clone(), tx_env, |_| {
             tx_host_env::write(mint.balance_key().to_string(), Amount::from(50_000_000));
+            tx_host_env::write(mint.supply_key().to_string(), Amount::from(50_000_000));
             let other = Key::from_str(&format!("#{}", vp_owner.encode()))
                 .unwrap()
                 .push(&"some arbitary key segment".to_string())
@@ -239,6 +254,7 @@ mod test {
         };
         vp_host_env::init_from_tx(vp_owner.clone(), tx_env, |_| {
             tx_host_env::write(mint.balance_key().to_string(), Amount::from(50_000_000));
+            tx_host_env::write(mint.supply_key().to_string(), Amount::from(50_000_000));
         });
 
         let vp_env = vp_host_env::take();

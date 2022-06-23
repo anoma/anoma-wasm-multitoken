@@ -33,6 +33,13 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     write(&balance_key, balance);
     log(&format!("new balance - {}", balance));
 
+    let supply_key = mint.supply_key().to_string();
+    let mut supply = read::amount(&supply_key)?;
+    log(&format!("existing supply is {}", supply));
+    supply.receive(&mint.amount);
+    write(&supply_key, supply);
+    log(&format!("new supply - {}", supply));
+
     Ok(())
 }
 
@@ -99,9 +106,10 @@ mod tests {
             panic!("apply_tx_aux error: {:?}", err);
         }
         let env = tx_host_env::take();
-        assert_eq!(env.all_touched_storage_keys().len(), 1);
+        assert_eq!(env.all_touched_storage_keys().len(), 2);
         assert!(env
             .all_touched_storage_keys()
             .contains(&inner.balance_key()));
+        assert!(env.all_touched_storage_keys().contains(&inner.supply_key()));
     }
 }
