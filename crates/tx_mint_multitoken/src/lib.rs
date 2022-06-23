@@ -1,1 +1,1 @@
-pub mod tx;
+mod tx;
