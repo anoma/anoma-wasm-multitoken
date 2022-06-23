@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use crate::{chain, client, wallet};
+use crate::{client, wallet};
 use retry::{delay::Fixed, retry};
 
 pub fn join_or_exit(chain_id: &str) {
@@ -28,7 +28,7 @@ pub fn ensure_joined_or_exit(chain_id: &str) {
             "Chain dir {} doesn't exist, will join chain",
             chain_dir.to_string_lossy()
         );
-        chain::join_or_exit(chain_id);
+        join_or_exit(chain_id);
     }
 }
 
