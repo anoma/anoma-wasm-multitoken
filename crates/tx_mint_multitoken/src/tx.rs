@@ -75,7 +75,7 @@ mod tests {
     }
 
     #[test]
-    fn test_minting_100_red_tokens() {
+    fn test_minting_100_tokens() {
         tx_host_env::init();
         let multitoken_addr = address::testing::gen_established_address();
         let owner_addr = address::testing::gen_established_address();
