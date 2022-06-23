@@ -106,9 +106,11 @@ fn validate_tx_aux(
             log("Verified signature of tx_data against the multitoken's public key");
 
             let balance_key = burn.balance_key();
+            let supply_key = burn.supply_key();
 
             let mut expected_keys_changed = BTreeSet::<storage::Key>::new();
             expected_keys_changed.insert(balance_key.clone());
+            expected_keys_changed.insert(supply_key.clone());
             if !keys_changed.eq(&expected_keys_changed) {
                 log(&format!(
                     "Expected only {:?} to have changed, but actual keys changed was: {:?}",
@@ -126,6 +128,18 @@ fn validate_tx_aux(
             log(&format!("expected new balance - {}", &balance_calculated));
             if balance_calculated != balance_post {
                 log("new balance does not match pre-existing balance with burn applied");
+                return Ok(false);
+            }
+
+            let (supply_pre, supply_post) = crate::read::amount(&supply_key.to_string())?;
+            log(&format!("pre-existing supply - {}", supply_pre));
+            log(&format!("new supply - {}", supply_post));
+
+            let mut supply_calculated = supply_pre;
+            supply_calculated.spend(&burn.amount);
+            log(&format!("expected new supply - {}", &supply_calculated));
+            if supply_calculated != supply_post {
+                log("new supply does not match pre-existing supply with burn applied");
                 return Ok(false);
             }
             Ok(true)

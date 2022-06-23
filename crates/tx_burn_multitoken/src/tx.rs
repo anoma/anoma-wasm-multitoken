@@ -32,6 +32,13 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     write(&balance_key, balance);
     log(&format!("new balance - {}", balance));
 
+    let supply_key = burn.supply_key().to_string();
+    let mut supply = read::amount(&supply_key)?;
+    log(&format!("existing supply is {}", supply));
+    supply.spend(&burn.amount);
+    write(&supply_key, supply);
+    log(&format!("new supply - {}", supply));
+
     Ok(())
 }
 
