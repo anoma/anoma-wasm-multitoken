@@ -1,6 +1,6 @@
-use anoma_tx_prelude::{log_string, transaction, write};
+use anoma_tx_prelude::{log_string, transaction};
 use eyre::{eyre, Result};
-use shared::{multitoken, read, signed};
+use shared::{multitoken, signed, update};
 
 const TX_NAME: &str = "tx_mint_multitoken";
 
@@ -26,19 +26,19 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
         _ => return Err(eyre!("expected a mint operation")),
     };
 
-    let balance_key = mint.balance_key().to_string();
-    let mut balance = read::amount(&balance_key)?;
-    log(&format!("existing balance is {}", balance));
-    balance.receive(&mint.amount);
-    write(&balance_key, balance);
-    log(&format!("new balance - {}", balance));
+    let balance_key = mint.balance_key();
+    update::amount(&balance_key, |amount| {
+        log(&format!("existing value for {} is {}", balance_key, amount));
+        amount.receive(&mint.amount);
+        log(&format!("new value for {} will be {}", balance_key, amount));
+    })?;
 
-    let supply_key = mint.supply_key().to_string();
-    let mut supply = read::amount(&supply_key)?;
-    log(&format!("existing supply is {}", supply));
-    supply.receive(&mint.amount);
-    write(&supply_key, supply);
-    log(&format!("new supply - {}", supply));
+    let supply_key = mint.supply_key();
+    update::amount(&supply_key, |amount| {
+        log(&format!("existing value for {} is {}", supply_key, amount));
+        amount.receive(&mint.amount);
+        log(&format!("new value for {} will be {}", supply_key, amount));
+    })?;
 
     Ok(())
 }
