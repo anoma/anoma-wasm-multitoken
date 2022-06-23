@@ -40,22 +40,29 @@ pub(crate) fn run(
     let burn = Signed::<multitoken::Op>::new(&privileged_sk, burn);
     let burn_file = file::write_temporary(burn)?;
 
-    client.tx(
-        tx_mint_multitoken_path,
-        mint_file.path().to_string_lossy().to_string().as_str(),
-        owner_alias,
-    );
-
     let balance_key = keys::balance(
         &multitoken_address,
         MULTITOKEN_PATH,
         TOKEN_ID,
         &owner_address,
     );
-    let balance: Amount = client.query_bytes(&balance_key)?;
+    let supply_key = keys::supply(&multitoken_address, MULTITOKEN_PATH, TOKEN_ID);
+
+    client.tx(
+        tx_mint_multitoken_path,
+        mint_file.path().to_string_lossy().to_string().as_str(),
+        owner_alias,
+    );
     let expected = Amount::from(50_000_000);
+
+    let balance: Amount = client.query_bytes(&balance_key)?;
     if balance != expected {
         eprintln!("balance: got {}, wanted {}", balance, expected);
+        return Ok(false);
+    }
+    let supply: Amount = client.query_bytes(&supply_key)?;
+    if supply != expected {
+        eprintln!("supply: got {}, wanted {}", supply, expected);
         return Ok(false);
     }
 
@@ -64,11 +71,16 @@ pub(crate) fn run(
         burn_file.path().to_string_lossy().to_string().as_str(),
         owner_alias,
     );
+    let expected = Amount::from(40_000_000);
 
     let balance: Amount = client.query_bytes(&balance_key)?;
-    let expected = Amount::from(40_000_000);
     if balance != expected {
         eprintln!("balance: got {}, wanted {}", balance, expected);
+        return Ok(false);
+    }
+    let supply: Amount = client.query_bytes(&supply_key)?;
+    if supply != expected {
+        eprintln!("supply: got {}, wanted {}", supply, expected);
         return Ok(false);
     }
 
