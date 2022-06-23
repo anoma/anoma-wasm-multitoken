@@ -176,7 +176,7 @@ mod test {
         vp::vp_host_env,
     };
     use anoma_vp_prelude::{
-        address, key::RefTo, storage, token::Amount, Address, BTreeSet, BorshSerialize, Key, Signed,
+        address, key::RefTo, storage, token::Amount, Address, BTreeSet, BorshSerialize, Signed,
     };
     use shared::multitoken;
 
@@ -219,7 +219,7 @@ mod test {
         vp_host_env::init_from_tx(vp_owner.clone(), tx_env, |_| {
             tx_host_env::write(mint.balance_key().to_string(), Amount::from(50_000_000));
             tx_host_env::write(mint.supply_key().to_string(), Amount::from(50_000_000));
-            let other = Key::from_str(&format!("#{}", vp_owner.encode()))
+            let other = storage::Key::from_str(&format!("#{}", vp_owner.encode()))
                 .unwrap()
                 .push(&"some arbitary key segment".to_string())
                 .unwrap();
