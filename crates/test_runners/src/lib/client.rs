@@ -97,9 +97,3 @@ pub fn join_network(chain_id: &str) -> Result<std::process::Output, std::io::Err
     let cmd = cmd.args(["utils", "join-network", "--chain-id", chain_id]);
     execute(cmd)
 }
-
-pub fn fetch_wasms_or_die(chain_id: &str) {
-    let mut cmd = Command::new("anomac");
-    let cmd = cmd.args(["utils", "fetch-wasms", "--chain-id", chain_id]);
-    execute_or_die(cmd);
-}

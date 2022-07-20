@@ -1,5 +1,5 @@
 # test runner image
-FROM ghcr.io/james-chf/devchain-container:sha-8e60590
+FROM ghcr.io/james-chf/devchain-container-abcipp:sha-759fa09
 RUN groupadd -g 1000 testrunner && \
     useradd -r -m -u 1000 -g testrunner testrunner
 
