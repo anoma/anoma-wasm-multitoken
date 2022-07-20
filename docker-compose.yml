@@ -2,8 +2,8 @@ version: "3.9"
 services:
   ledger:
     # TODO: this image should be one built under the Anoma GitHub organization
-    # this image must have `anomac utils fetch-wasms` functionality
-    image: ghcr.io/james-chf/devchain-container:sha-8e60590
+    # this image must have wasms already present for anomac to use
+    image: ghcr.io/james-chf/devchain-container-abcipp:sha-759fa09
     platform: linux/amd64
     ports:
       - '127.0.0.1:8123:8123'
@@ -13,7 +13,7 @@ services:
     platform: linux/amd64
     environment:
       &anoma_env
-      ANOMA_CHAIN_ID: dev.ceed9aae366955c0818d57a280 # ANOMA_CHAIN_ID should match chain ID used in ledger image
+      ANOMA_CHAIN_ID: dev.a2d11878154b8e744ddc79f9e2 # ANOMA_CHAIN_ID should match chain ID used in ledger image
       ANOMA_NETWORK_CONFIGS_SERVER: http://ledger:8123
       ANOMA_LEDGER_ADDRESS: ledger:26657
     command:

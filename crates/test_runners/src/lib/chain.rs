@@ -12,7 +12,6 @@ pub fn join_or_exit(chain_id: &str) {
         },
     )
     .unwrap();
-    client::fetch_wasms_or_die(chain_id);
 }
 
 pub fn ensure_joined_or_exit(chain_id: &str) {
