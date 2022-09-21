@@ -14,6 +14,7 @@ borsh = "0.9.0"
 wee_alloc = "0.4.5"
 eyre = "0.6.8"
 shared = {path = "../shared" }
+getrandom = { version = "0.2", features = ["custom"] }
 
 [dev-dependencies]
 namada_tests = {git = "https://github.com/anoma/namada"}

@@ -3150,6 +3150,7 @@ version = "0.0.0"
 dependencies = [
  "borsh",
  "eyre",
+ "getrandom",
  "namada",
  "namada_tests",
  "namada_vp_prelude",
