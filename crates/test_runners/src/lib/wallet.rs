@@ -12,7 +12,7 @@ use rand::{distributions::Alphanumeric, Rng};
 use crate::exec::{execute, execute_or_die};
 
 pub fn read_secret_key(alias: &str) -> Result<common::SecretKey> {
-    let mut cmd = Command::new("anomaw");
+    let mut cmd = Command::new("namadaw");
     let cmd = cmd.args(["key", "export", "--alias", alias]);
     execute(cmd)?;
     let filename = format!("key_{}", alias.to_lowercase());
@@ -25,21 +25,21 @@ pub fn read_secret_key(alias: &str) -> Result<common::SecretKey> {
 }
 
 pub fn find_address(alias: &str) -> Result<String> {
-    let mut cmd = Command::new("anomaw");
+    let mut cmd = Command::new("namadaw");
     let cmd = cmd.args(["address", "find", "--alias", alias]);
     let output = execute(cmd)?;
     let output = String::from_utf8(output.stdout)?;
-    Ok(parse_anomaw_find_address(output))
+    Ok(parse_namadaw_find_address(output))
 }
 
-pub fn parse_anomaw_find_address(output: String) -> String {
+pub fn parse_namadaw_find_address(output: String) -> String {
     // crudely get the bech32m address from stdout
     let components: Vec<_> = output.split(':').collect();
     components[1].trim().to_owned()
 }
 
 pub fn gen_address_or_die(alias: &str) {
-    let mut cmd = Command::new("anomaw");
+    let mut cmd = Command::new("namadaw");
     let cmd = cmd.args(["address", "gen", "--unsafe-dont-encrypt", "--alias", alias]);
     execute_or_die(cmd);
 }
@@ -59,8 +59,8 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_parse_anomaw_find_address() {
+    fn test_parse_namadaw_find_address() {
         let output = "Found address Established: atest1v4ehgw36g4pyg3j9x3qnjd3cxgmyz3fk8qcrys3hxdp5xwfnx3zyxsj9xgunxsfjg5u5xvzyzrrqtn".to_string();
-        parse_anomaw_find_address(output);
+        parse_namadaw_find_address(output);
     }
 }
