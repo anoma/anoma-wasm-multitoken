@@ -19,7 +19,7 @@ path = "src/bin/mint_then_burn/main.rs"
 
 [dependencies]
 shared = { path = "../shared" }
-anoma = {git = "https://github.com/anoma/anoma", features = ["rand"]}
+namada = {git = "https://github.com/anoma/namada", features = ["rand"]}
 borsh = "0.9.0"
 rand = "0.8"
 tempfile = "3.3.0"

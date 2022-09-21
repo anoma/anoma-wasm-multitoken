@@ -4,9 +4,9 @@ use std::{
     process::Command,
 };
 
-use anoma::types::key::common;
 use borsh::BorshDeserialize;
 use eyre::{eyre, Context, Result};
+use namada::types::key::common;
 use rand::{distributions::Alphanumeric, Rng};
 
 use crate::exec::{execute, execute_or_die};

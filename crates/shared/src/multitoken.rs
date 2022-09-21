@@ -1,9 +1,9 @@
 use crate::keys;
-use anoma_tx_prelude::token::Amount;
-use anoma_tx_prelude::BorshDeserialize;
-use anoma_tx_prelude::Key;
 use borsh::BorshSchema;
 use borsh::BorshSerialize;
+use namada_tx_prelude::token::Amount;
+use namada_tx_prelude::BorshDeserialize;
+use namada_tx_prelude::Key;
 use serde::{Deserialize, Serialize};
 
 /// Represents an amount of a multitoken token for some owner
@@ -44,8 +44,8 @@ pub enum Op {
 
 #[cfg(test)]
 mod tests {
-    use anoma::types::storage::DbKeySeg;
-    use anoma_tx_prelude::{token::Amount, Address};
+    use namada::types::storage::DbKeySeg;
+    use namada_tx_prelude::{token::Amount, Address};
 
     use crate::keys::SUPPLY_KEY_SEGMENT;
 

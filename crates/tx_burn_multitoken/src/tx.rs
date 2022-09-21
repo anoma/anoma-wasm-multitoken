@@ -1,5 +1,5 @@
-use anoma_tx_prelude::{log_string, transaction};
 use eyre::{eyre, Result};
+use namada_tx_prelude::{log_string, transaction};
 use shared::{multitoken, signed, update};
 
 const TX_NAME: &str = "tx_burn_multitoken";
@@ -46,11 +46,11 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
 #[cfg(test)]
 mod tests {
 
-    use anoma_tests::tx::*;
-    use anoma_tx_prelude::{address, token::Amount, BorshSerialize, Signed};
+    use namada_tests::tx::*;
+    use namada_tx_prelude::{address, token::Amount, BorshSerialize, Signed};
 
-    use anoma::proto::Tx;
-    use anoma::types::key::common::SecretKey;
+    use namada::proto::Tx;
+    use namada::types::key::common::SecretKey;
 
     use rand::prelude::ThreadRng;
 
@@ -59,7 +59,7 @@ mod tests {
     fn random_key() -> SecretKey {
         let mut rng: ThreadRng = rand::thread_rng();
         let sk: SecretKey = {
-            use anoma::types::key::{ed25519, SecretKey, SigScheme};
+            use namada::types::key::{ed25519, SecretKey, SigScheme};
             ed25519::SigScheme::generate(&mut rng).try_to_sk().unwrap()
         };
         sk

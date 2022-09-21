@@ -1,7 +1,7 @@
 //! Helpers for reading from storage
 
-use anoma_vp_prelude::{read_bytes_post, read_bytes_pre, token::Amount, BorshDeserialize};
 use eyre::{eyre, Context, Result};
+use namada_vp_prelude::{read_bytes_post, read_bytes_pre, token::Amount, BorshDeserialize};
 
 pub(crate) fn amount(key: &str) -> Result<(Amount, Amount)> {
     let pre = if let Some(bytes) = read_bytes_pre(key) {

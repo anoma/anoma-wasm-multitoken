@@ -1,6 +1,6 @@
-use anoma::types::storage::Key;
 use borsh::BorshDeserialize;
 use eyre::{Context, Result};
+use namada::types::storage::Key;
 
 use crate::exec::{execute, execute_or_die};
 use std::process::Command;

@@ -1,7 +1,7 @@
 //! Utilities to help with unwrapping and checking signed data
 
-use anoma_tx_prelude::{BorshDeserialize, BorshSerialize, Signed, SignedTxData};
 use eyre::{eyre, Context, Result};
+use namada_tx_prelude::{BorshDeserialize, BorshSerialize, Signed, SignedTxData};
 
 /// Extracts and serializes the data field from a Borsh-serialized SignedTxData
 /// We cannot check the outer SignedTxData signature field in our wasm code as that is calculated over

@@ -1,5 +1,5 @@
-use anoma_tx_prelude::{token::Amount, write, Key};
 use eyre::Result;
+use namada_tx_prelude::{token::Amount, write, Key};
 
 use crate::read;
 
