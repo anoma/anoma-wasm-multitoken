@@ -6,8 +6,3 @@ COPY build/debug/ wasm/
 RUN ./init_chain.sh
 
 COPY build/tests/ tests/
-
-# RUN groupadd -g 1000 testrunner && \
-#     useradd -r -m -u 1000 -g testrunner testrunner
-# RUN chown -R testrunner:testrunner .
-# USER testrunner
