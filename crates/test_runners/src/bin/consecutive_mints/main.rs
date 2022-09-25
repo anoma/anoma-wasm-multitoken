@@ -5,12 +5,10 @@ use test_runners::wallet;
 
 mod test;
 
-const CHAIN_ID_ENV_VAR: &str = "ANOMA_CHAIN_ID";
 const TENDERMINT_RPC_ENV_VAR: &str = "ANOMA_LEDGER_ADDRESS";
 
 fn main() {
-    let chain_id = env::get_var_or_die(CHAIN_ID_ENV_VAR);
-    chain::ensure_joined_or_exit(&chain_id);
+    chain::join();
 
     let vp_implicit_alias = wallet::random_alias("multitoken-implicit");
     let vp_alias = wallet::random_alias("multitoken-established");

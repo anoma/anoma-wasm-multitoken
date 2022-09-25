@@ -1,7 +1,7 @@
 //! Helpers for reading from storage
 
-use anoma_tx_prelude::{read_bytes, token::Amount, BorshDeserialize};
 use eyre::{Context, Result};
+use namada_tx_prelude::{read_bytes, token::Amount, BorshDeserialize};
 
 /// Returns the stored Amount, or 0 if not stored
 pub fn amount(key: &str) -> Result<Amount> {
@@ -14,8 +14,8 @@ pub fn amount(key: &str) -> Result<Amount> {
 
 #[cfg(test)]
 mod tests {
-    use anoma_tests::tx::*;
-    use anoma_tx_prelude::token::Amount;
+    use namada_tests::tx::*;
+    use namada_tx_prelude::token::Amount;
 
     use crate::read;
 

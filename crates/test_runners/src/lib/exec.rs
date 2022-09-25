@@ -3,7 +3,7 @@ use std::process::Command;
 pub fn execute(cmd: &mut Command) -> Result<std::process::Output, std::io::Error> {
     let args: Vec<String> = cmd
         .get_args()
-        .map(|s| s.to_string_lossy().to_owned().to_string())
+        .map(|s| s.to_string_lossy().into_owned())
         .collect();
     println!(
         "> {} {}",

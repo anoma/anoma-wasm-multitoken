@@ -3,6 +3,34 @@ use std::path::Path;
 use crate::{client, wallet};
 use retry::{delay::Fixed, retry};
 
+const CHAIN_ID_ENV_VAR: &str = "ANOMA_CHAIN_ID";
+
+pub fn join() {
+    let start_delay = std::time::Duration::new(10, 0);
+
+    let chain_id = std::env::var(CHAIN_ID_ENV_VAR)
+        .or_else(|_| std::fs::read_to_string("chain-id"))
+        .unwrap();
+    let chain_id = chain_id.trim();
+    println!("Chain ID - {}", chain_id);
+    std::thread::sleep(start_delay);
+    ensure_joined_or_exit(chain_id);
+
+    // NB: this step is required temporarily until <https://github.com/anoma/namada/issues/98> is resolved
+    {
+        use fs_extra::dir;
+
+        let mut options = dir::CopyOptions::new(); //Initialize default values for CopyOptions
+        options.skip_exist = true;
+
+        let from = Path::new("wasm");
+        let to = format!(".anoma/{}", &chain_id);
+        let to = Path::new(&to);
+        println!("Copying {:?} to {:?}", from, to);
+        dir::move_dir(from, to, &options).unwrap();
+    }
+}
+
 pub fn join_or_exit(chain_id: &str) {
     retry(
         Fixed::from_millis(1000).take(10),

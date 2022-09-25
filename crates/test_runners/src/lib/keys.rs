@@ -1,7 +1,7 @@
-use anoma::types::key::common;
-use anoma::types::key::ed25519;
-use anoma::types::key::SecretKey;
-use anoma::types::key::SigScheme;
+use namada::types::key::common;
+use namada::types::key::ed25519;
+use namada::types::key::SecretKey;
+use namada::types::key::SigScheme;
 
 pub fn random_key() -> common::SecretKey {
     let mut rng = rand::thread_rng();

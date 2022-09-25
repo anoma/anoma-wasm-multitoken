@@ -1,5 +1,5 @@
-use anoma::{proto::Signed, types::token::Amount};
 use eyre::Result;
+use namada::{proto::Signed, types::token::Amount};
 use shared::keys::MULTITOKEN_PATH;
 use shared::{keys, multitoken};
 use test_runners::{client, file, wallet};

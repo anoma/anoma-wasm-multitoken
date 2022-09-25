@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use anoma_tx_prelude::Key;
+use namada_tx_prelude::Key;
 
 pub const BALANCE_KEY_SEGMENT: &str = "balance";
 pub const SUPPLY_KEY_SEGMENT: &str = "supply";
@@ -41,8 +41,8 @@ pub fn supply(multitoken_addr: &str, multitoken_path: &str, token_id: &str) -> K
 #[cfg(test)]
 mod tests {
     use super::*;
-    use anoma::types::storage::DbKeySeg;
-    use anoma_tx_prelude::Address;
+    use namada::types::storage::DbKeySeg;
+    use namada_tx_prelude::Address;
 
     const MULTITOKEN_ADDRESS: &str =
         "atest1v4ehgw36g4pyg3j9x3qnjd3cxgmyz3fk8qcrys3hxdp5xwfnx3zyxsj9xgunxsfjg5u5xvzyzrrqtn";

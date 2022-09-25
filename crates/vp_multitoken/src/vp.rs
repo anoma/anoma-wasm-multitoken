@@ -1,9 +1,9 @@
-use anoma_vp_prelude::{
+use eyre::{eyre, Context, Result};
+use namada_vp_prelude::{
     key::{common, pk_key, SigScheme},
     log_string, read_bytes_pre, storage, validity_predicate, Address, BTreeSet, BorshDeserialize,
     BorshSerialize, Signed,
 };
-use eyre::{eyre, Context, Result};
 use shared::{multitoken, signed};
 
 const VP_NAME: &str = "vp_multitoken";
@@ -171,24 +171,24 @@ fn verify_signature_against_pk<B: BorshDeserialize + BorshSerialize>(
 mod test {
     use std::str::FromStr;
 
-    use anoma_tests::{
+    use namada_tests::{
         tx::{tx_host_env, TestTxEnv},
         vp::vp_host_env,
     };
-    use anoma_vp_prelude::{
+    use namada_vp_prelude::{
         address, key::RefTo, storage, token::Amount, Address, BTreeSet, BorshSerialize, Signed,
     };
     use shared::multitoken;
 
     use crate::vp::validate_tx;
 
-    use anoma::{proto::Tx, types::key::common::SecretKey};
+    use namada::{proto::Tx, types::key::common::SecretKey};
     use rand::prelude::ThreadRng;
 
     fn random_key() -> SecretKey {
         let mut rng: ThreadRng = rand::thread_rng();
         let sk: SecretKey = {
-            use anoma::types::key::{ed25519, SecretKey, SigScheme};
+            use namada::types::key::{ed25519, SecretKey, SigScheme};
             ed25519::SigScheme::generate(&mut rng).try_to_sk().unwrap()
         };
         sk

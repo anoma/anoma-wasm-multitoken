@@ -1,6 +1,6 @@
-use anoma::types::storage::Key;
 use borsh::BorshDeserialize;
 use eyre::{Context, Result};
+use namada::types::storage::Key;
 
 use crate::exec::{execute, execute_or_die};
 use std::process::Command;
@@ -17,7 +17,7 @@ impl Client {
     }
 
     pub fn init_account(&self, source: &str, alias: &str, code_path: Option<&str>) {
-        let mut cmd = Command::new("anomac");
+        let mut cmd = Command::new("namadac");
         let mut args = vec![
             "init-account",
             "--ledger-address",
@@ -37,7 +37,7 @@ impl Client {
     }
 
     pub fn get_xan_from_faucet(&self, target: &str) {
-        let mut cmd = Command::new("anomac");
+        let mut cmd = Command::new("namadac");
         let cmd = cmd.args([
             "transfer",
             "--ledger-address",
@@ -57,7 +57,7 @@ impl Client {
     }
 
     pub fn tx(&self, code_path: &str, data_path: &str, signer: &str) {
-        let mut cmd = Command::new("anomac");
+        let mut cmd = Command::new("namadac");
         let cmd = cmd.args([
             "tx",
             "--ledger-address",
@@ -73,7 +73,7 @@ impl Client {
     }
 
     pub fn query_bytes<T: BorshDeserialize>(&self, storage_key: &Key) -> Result<T> {
-        let mut cmd = Command::new("anomac");
+        let mut cmd = Command::new("namadac");
         let cmd = cmd.env("ANOMA_LOG", "none").args([
             "query-bytes",
             "--ledger-address",
@@ -93,7 +93,7 @@ impl Client {
 
 /// NB: requires ANOMA_NETWORK_CONFIGS_SERVER in env
 pub fn join_network(chain_id: &str) -> Result<std::process::Output, std::io::Error> {
-    let mut cmd = Command::new("anomac");
+    let mut cmd = Command::new("namadac");
     let cmd = cmd.args(["utils", "join-network", "--chain-id", chain_id]);
     execute(cmd)
 }
