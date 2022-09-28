@@ -1,7 +1,7 @@
-use test_runners::chain;
-use test_runners::client;
-use test_runners::env;
-use test_runners::wallet;
+use test_runner::chain;
+use test_runner::client;
+use test_runner::env;
+use test_runner::wallet;
 
 mod test;
 
