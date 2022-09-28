@@ -4,7 +4,7 @@ use eyre::Result;
 use shared::{keys, multitoken};
 
 use shared::keys::MULTITOKEN_PATH;
-use test_runners::{client, file, wallet};
+use test_runner::{client, file, wallet};
 
 const TOKEN_ID: &str = "red";
 

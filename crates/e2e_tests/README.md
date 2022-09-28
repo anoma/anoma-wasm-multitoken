@@ -1,4 +1,4 @@
-# test_runners
+# e2e_tests
 
 End-to-end tests as Rust binaries which can be run against any Anoma chain.
 

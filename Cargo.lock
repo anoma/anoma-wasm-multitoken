@@ -719,6 +719,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "e2e_tests"
+version = "0.0.0"
+dependencies = [
+ "eyre",
+ "namada",
+ "rand",
+ "shared",
+ "test_runner",
+]
+
+[[package]]
 name = "ecdsa"
 version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1512,7 +1523,7 @@ checksum = "e5ce46fe64a9d73be07dcbe690a38ce1b293be448fd8ce1e6c1b8062c9f72c6a"
 [[package]]
 name = "namada"
 version = "0.7.1"
-source = "git+https://github.com/anoma/namada?rev=v0.7.1#fda71af313e6f9efa1d4c9ca9b4566e31780ba94"
+source = "git+https://github.com/anoma/namada?rev=v0.7.1#159eddc724527f441c9ec439d659b189dec5d6e9"
 dependencies = [
  "ark-bls12-381",
  "ark-serialize",
@@ -1562,7 +1573,7 @@ dependencies = [
 [[package]]
 name = "namada_macros"
 version = "0.7.1"
-source = "git+https://github.com/anoma/namada?rev=v0.7.1#fda71af313e6f9efa1d4c9ca9b4566e31780ba94"
+source = "git+https://github.com/anoma/namada?rev=v0.7.1#159eddc724527f441c9ec439d659b189dec5d6e9"
 dependencies = [
  "quote",
  "syn",
@@ -1571,7 +1582,7 @@ dependencies = [
 [[package]]
 name = "namada_proof_of_stake"
 version = "0.7.1"
-source = "git+https://github.com/anoma/namada?rev=v0.7.1#fda71af313e6f9efa1d4c9ca9b4566e31780ba94"
+source = "git+https://github.com/anoma/namada?rev=v0.7.1#159eddc724527f441c9ec439d659b189dec5d6e9"
 dependencies = [
  "borsh",
  "proptest",
@@ -1581,7 +1592,7 @@ dependencies = [
 [[package]]
 name = "namada_tests"
 version = "0.7.1"
-source = "git+https://github.com/anoma/namada?rev=v0.7.1#fda71af313e6f9efa1d4c9ca9b4566e31780ba94"
+source = "git+https://github.com/anoma/namada?rev=v0.7.1#159eddc724527f441c9ec439d659b189dec5d6e9"
 dependencies = [
  "chrono",
  "concat-idents",
@@ -1600,7 +1611,7 @@ dependencies = [
 [[package]]
 name = "namada_tx_prelude"
 version = "0.7.1"
-source = "git+https://github.com/anoma/namada?rev=v0.7.1#fda71af313e6f9efa1d4c9ca9b4566e31780ba94"
+source = "git+https://github.com/anoma/namada?rev=v0.7.1#159eddc724527f441c9ec439d659b189dec5d6e9"
 dependencies = [
  "namada_vm_env",
  "sha2 0.10.6",
@@ -1609,7 +1620,7 @@ dependencies = [
 [[package]]
 name = "namada_vm_env"
 version = "0.7.1"
-source = "git+https://github.com/anoma/namada?rev=v0.7.1#fda71af313e6f9efa1d4c9ca9b4566e31780ba94"
+source = "git+https://github.com/anoma/namada?rev=v0.7.1#159eddc724527f441c9ec439d659b189dec5d6e9"
 dependencies = [
  "borsh",
  "hex",
@@ -1620,7 +1631,7 @@ dependencies = [
 [[package]]
 name = "namada_vp_prelude"
 version = "0.7.1"
-source = "git+https://github.com/anoma/namada?rev=v0.7.1#fda71af313e6f9efa1d4c9ca9b4566e31780ba94"
+source = "git+https://github.com/anoma/namada?rev=v0.7.1#159eddc724527f441c9ec439d659b189dec5d6e9"
 dependencies = [
  "namada_vm_env",
  "sha2 0.10.6",
@@ -2703,8 +2714,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_runners"
-version = "0.0.0"
+name = "test_runner"
+version = "0.1.0"
+source = "git+https://github.com/anoma/test_runner.git#ef459d5350c1212e8609aa331dc8d67bf097f2d7"
 dependencies = [
  "borsh",
  "eyre",
@@ -2713,7 +2725,6 @@ dependencies = [
  "namada",
  "rand",
  "retry",
- "shared",
  "tempfile",
 ]
 
