@@ -2721,15 +2721,10 @@ dependencies = [
 name = "test_runners"
 version = "0.0.0"
 dependencies = [
- "borsh",
  "eyre",
- "fs_extra",
- "hex",
  "namada",
  "rand",
- "retry",
  "shared",
- "tempfile",
  "test_runner",
 ]
 
