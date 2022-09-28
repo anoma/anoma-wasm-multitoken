@@ -14,7 +14,7 @@ cargo test
 
 ### End-to-end
 
-End-to-end tests are binaries under `crates/test_runners/src/bin`. It should be possible to run them against any Anoma chain.
+End-to-end tests are binaries under `crates/e2e_tests/src/bin`. It should be possible to run them against any Anoma chain.
 
 #### Running locally using Docker Compose
 

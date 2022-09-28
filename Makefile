@@ -5,7 +5,7 @@ debug:
 		build \
 			--workspace \
 			--exclude 'shared' \
-			--exclude 'test_runners' \
+			--exclude 'e2e_tests' \
 			--target wasm32-unknown-unknown \
 			--target-dir build/cache/wasm32-unknown-unknown \
 			--out-dir build/debug/
@@ -15,21 +15,21 @@ release:
 		build \
 			--workspace \
 			--exclude 'shared' \
-			--exclude 'test_runners' \
+			--exclude 'e2e_tests' \
 			--release \
 			--target wasm32-unknown-unknown \
 			--target-dir build/cache/wasm32-unknown-unknown \
 			--out-dir build/release/
 
-test-runners:
+e2e-test-binaries:
 	$(cargo) -Z unstable-options \
 		build \
 			--target x86_64-unknown-linux-musl \
 			--target-dir build/cache/x86_64-unknown-linux-musl \
-			--package 'test_runners' \
+			--package 'e2e_tests' \
 			--out-dir build/tests
 
-docker: debug test-runners
+docker: debug e2e-test-binaries
 	docker compose build
 
 .PHONY : debug release docker

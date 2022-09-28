@@ -1,5 +1,5 @@
 [package]
-name = "test_runners"
+name = "e2e_tests"
 authors = ["Heliax <hello@heliax.dev>"]
 license = "GPL-3.0"
 version = "0.0.0"
