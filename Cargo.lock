@@ -2436,7 +2436,7 @@ dependencies = [
 [[package]]
 name = "test_runner"
 version = "0.2.0-dev"
-source = "git+https://github.com/anoma/e2e-test-helpers?rev=20ae0e39677a830654778a90d3c57c62780584ba#20ae0e39677a830654778a90d3c57c62780584ba"
+source = "git+https://github.com/anoma/e2e-test-helpers?rev=8e15f433bf076a30ef1364aee3fdad5ee449e5d7#8e15f433bf076a30ef1364aee3fdad5ee449e5d7"
 dependencies = [
  "borsh",
  "eyre",
