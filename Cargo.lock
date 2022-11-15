@@ -2436,7 +2436,7 @@ dependencies = [
 [[package]]
 name = "test_runner"
 version = "0.2.0-dev"
-source = "git+https://github.com/anoma/e2e-test-helpers?rev=f64f7c1549cb1d4cea677fa445aa81aaa4c1aebe#f64f7c1549cb1d4cea677fa445aa81aaa4c1aebe"
+source = "git+https://github.com/anoma/e2e-test-helpers?rev=20ae0e39677a830654778a90d3c57c62780584ba#20ae0e39677a830654778a90d3c57c62780584ba"
 dependencies = [
  "borsh",
  "eyre",
@@ -2444,6 +2444,7 @@ dependencies = [
  "hex",
  "namada",
  "rand",
+ "regex",
  "retry",
  "tempfile",
 ]

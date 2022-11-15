@@ -15,7 +15,7 @@ path = "src/bin/mint_then_burn/main.rs"
 
 [dependencies]
 shared = { path = "../shared" }
-test_runner = { git = "https://github.com/anoma/e2e-test-helpers", rev = "f64f7c1549cb1d4cea677fa445aa81aaa4c1aebe" }
+test_runner = { git = "https://github.com/anoma/e2e-test-helpers", rev = "20ae0e39677a830654778a90d3c57c62780584ba" }
 namada = { git = "https://github.com/anoma/namada", tag = "v0.9.0", features = [
     "rand",
 ] }
