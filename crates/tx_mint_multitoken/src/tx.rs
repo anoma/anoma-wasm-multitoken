@@ -1,5 +1,5 @@
 use eyre::{eyre, Result};
-use namada_tx_prelude::{log_string, transaction};
+use namada_tx_prelude::{log_string, transaction, Ctx, TxResult};
 use shared::{multitoken, signed, update};
 
 const TX_NAME: &str = "tx_mint_multitoken";
@@ -9,14 +9,15 @@ fn log(msg: &str) {
 }
 
 #[transaction]
-fn apply_tx(tx_data: Vec<u8>) {
-    if let Err(err) = apply_tx_aux(tx_data) {
+fn apply_tx(ctx: &mut Ctx, tx_data: Vec<u8>) -> TxResult {
+    if let Err(err) = apply_tx_aux(ctx, tx_data) {
         log(&format!("ERROR: {:?}", err));
-        panic!("{:?}", err)
+        panic!("{:?}", err) // TODO: return an error instead of panicking
     }
+    Ok(())
 }
 
-fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
+fn apply_tx_aux(ctx: &mut Ctx, tx_data: Vec<u8>) -> Result<()> {
     log(&format!("called with tx_data - {} bytes", tx_data.len()));
 
     let op: multitoken::Op = signed::extract_signed(&tx_data[..])?.data;
@@ -27,14 +28,14 @@ fn apply_tx_aux(tx_data: Vec<u8>) -> Result<()> {
     };
 
     let balance_key = mint.balance_key();
-    update::amount(&balance_key, |amount| {
+    update::amount(ctx, &balance_key, |amount| {
         log(&format!("existing value for {} is {}", balance_key, amount));
         amount.receive(&mint.amount);
         log(&format!("new value for {} will be {}", balance_key, amount));
     })?;
 
     let supply_key = mint.supply_key();
-    update::amount(&supply_key, |amount| {
+    update::amount(ctx, &supply_key, |amount| {
         log(&format!("existing value for {} is {}", supply_key, amount));
         amount.receive(&mint.amount);
         log(&format!("new value for {} will be {}", supply_key, amount));
@@ -68,7 +69,7 @@ mod tests {
         tx_host_env::init();
 
         let tx_data = vec![];
-        assert!(apply_tx_aux(tx_data).is_err());
+        assert!(apply_tx_aux(tx_host_env::ctx(), tx_data).is_err());
 
         let env = tx_host_env::take();
         assert!(env.all_touched_storage_keys().is_empty());
@@ -100,7 +101,7 @@ mod tests {
         let outer_sk = random_key();
         let tx_data = Tx::new(vec![], Some(data)).sign(&outer_sk).data.unwrap();
 
-        let result = apply_tx_aux(tx_data);
+        let result = apply_tx_aux(tx_host_env::ctx(), tx_data);
 
         if let Err(err) = result {
             panic!("apply_tx_aux error: {:?}", err);

@@ -40,8 +40,8 @@ pub(crate) fn run(
 
     client.tx(
         tx_mint_multitoken_path,
-        mint_file.path().to_string_lossy().to_string().as_str(),
         owner_alias,
+        Some(mint_file.path().to_string_lossy().to_string().as_str()),
     );
     let expected = Amount::from(50_000_000);
 
@@ -58,8 +58,8 @@ pub(crate) fn run(
 
     client.tx(
         tx_mint_multitoken_path,
-        mint_file.path().to_string_lossy().to_string().as_str(),
         owner_alias,
+        Some(mint_file.path().to_string_lossy().to_string().as_str()),
     );
     let expected = Amount::from(100_000_000);
 

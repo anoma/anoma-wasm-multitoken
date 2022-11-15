@@ -9,7 +9,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-namada_tx_prelude = { git = "https://github.com/anoma/namada", rev = "v0.7.1" }
+namada_tx_prelude = { git = "https://github.com/anoma/namada", tag = "v0.9.0" }
 borsh = "0.9.0"
 wee_alloc = "0.4.5"
 eyre = "0.6.8"
@@ -17,6 +17,6 @@ serde = { version = "1.0.125", features = ["derive"] }
 shared = { path = "../shared" }
 
 [dev-dependencies]
-namada_tests = { git = "https://github.com/anoma/namada", rev = "v0.7.1" }
-namada = { git = "https://github.com/anoma/namada", rev = "v0.7.1" }
+namada_tests = { git = "https://github.com/anoma/namada", tag = "v0.9.0" }
+namada = { git = "https://github.com/anoma/namada", tag = "v0.9.0" }
 rand = "0.8"
