@@ -18,8 +18,6 @@ End-to-end tests are binaries under `crates/e2e_tests/src/bin`. It should be pos
 
 #### Running locally using Docker Compose
 
-> :warning: This method of running locally may not work on Apple Silicon.
-
 To run them against a preconfigured network:
 
 ```shell
