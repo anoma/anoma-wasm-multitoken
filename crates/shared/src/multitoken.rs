@@ -1,9 +1,9 @@
 use crate::keys;
 use borsh::BorshSchema;
 use borsh::BorshSerialize;
+use namada_tx_prelude::storage::Key;
 use namada_tx_prelude::token::Amount;
 use namada_tx_prelude::BorshDeserialize;
-use namada_tx_prelude::Key;
 use serde::{Deserialize, Serialize};
 
 /// Represents an amount of a multitoken token for some owner

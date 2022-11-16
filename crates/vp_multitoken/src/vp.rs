@@ -1,8 +1,8 @@
 use eyre::{eyre, Context, Result};
 use namada_vp_prelude::{
     key::{common, pk_key, SigScheme},
-    log_string, read_bytes_pre, storage, validity_predicate, Address, BTreeSet, BorshDeserialize,
-    BorshSerialize, Signed,
+    log_string, storage, validity_predicate, Address, BTreeSet, BorshDeserialize, BorshSerialize,
+    Ctx, Signed, VpEnv, VpResult,
 };
 use shared::{multitoken, signed};
 
@@ -14,30 +14,32 @@ fn log(msg: &str) {
 
 #[validity_predicate]
 fn validate_tx(
+    ctx: &Ctx,
     tx_data: Vec<u8>,
-    vp_addr: Address,
+    addr: Address,
     keys_changed: BTreeSet<storage::Key>,
     verifiers: BTreeSet<Address>,
-) -> bool {
+) -> VpResult {
     log(&format!(
         "validate_tx called with addr: {}, keys_changed: {:#?}, tx_data: \
          {} bytes, verifiers: {:?}",
-        vp_addr,
+        addr,
         keys_changed,
         tx_data.len(),
         verifiers
     ));
-    match validate_tx_aux(tx_data, vp_addr, keys_changed, verifiers) {
-        Ok(result) => result,
+    match validate_tx_aux(ctx, tx_data, addr, keys_changed, verifiers) {
+        Ok(result) => Ok(result),
         Err(err) => {
             log(&format!("ERROR: {:?}", err));
-            panic!("{:?}", err);
+            panic!("{:?}", err); // TODO: don't panic
         }
     }
 }
 
 /// Should return an error iff we were unable to validate a transaction due to something unexpected
 fn validate_tx_aux(
+    ctx: &Ctx,
     tx_data: Vec<u8>,
     vp_addr: Address,
     keys_changed: BTreeSet<storage::Key>,
@@ -51,7 +53,7 @@ fn validate_tx_aux(
         multitoken::Op::Mint(ref mint) => {
             log("deserialized Mint operation");
 
-            if !verify_signature_against_pk(&vp_addr, &signed)? {
+            if !verify_signature_against_pk(ctx, &vp_addr, &signed)? {
                 log("Signature did not verify against the multitoken's public key");
                 return Ok(false);
             };
@@ -71,7 +73,7 @@ fn validate_tx_aux(
                 return Ok(false);
             }
 
-            let (balance_pre, balance_post) = crate::read::amount(&balance_key.to_string())?;
+            let (balance_pre, balance_post) = crate::read::amount(ctx, &balance_key)?;
             log(&format!("pre-existing balance - {}", balance_pre));
             log(&format!("new balance - {}", balance_post));
 
@@ -83,7 +85,7 @@ fn validate_tx_aux(
                 return Ok(false);
             }
 
-            let (supply_pre, supply_post) = crate::read::amount(&supply_key.to_string())?;
+            let (supply_pre, supply_post) = crate::read::amount(ctx, &supply_key)?;
             log(&format!("pre-existing supply - {}", supply_pre));
             log(&format!("new supply - {}", supply_post));
 
@@ -99,7 +101,7 @@ fn validate_tx_aux(
         multitoken::Op::Burn(ref burn) => {
             log("deserialized Burn operation");
 
-            if !verify_signature_against_pk(&vp_addr, &signed)? {
+            if !verify_signature_against_pk(ctx, &vp_addr, &signed)? {
                 log("Signature did not verify against the multitoken's public key");
                 return Ok(false);
             };
@@ -119,7 +121,7 @@ fn validate_tx_aux(
                 return Ok(false);
             }
 
-            let (balance_pre, balance_post) = crate::read::amount(&balance_key.to_string())?;
+            let (balance_pre, balance_post) = crate::read::amount(ctx, &balance_key)?;
             log(&format!("pre-existing balance - {}", balance_pre));
             log(&format!("new balance - {}", balance_post));
 
@@ -131,7 +133,7 @@ fn validate_tx_aux(
                 return Ok(false);
             }
 
-            let (supply_pre, supply_post) = crate::read::amount(&supply_key.to_string())?;
+            let (supply_pre, supply_post) = crate::read::amount(ctx, &supply_key)?;
             log(&format!("pre-existing supply - {}", supply_pre));
             log(&format!("new supply - {}", supply_post));
 
@@ -150,11 +152,12 @@ fn validate_tx_aux(
 // TODO: right now we can't easily differentiate between a signature not verifying and an error
 // so this only returns Ok(true) or Err(_)
 fn verify_signature_against_pk<B: BorshDeserialize + BorshSerialize>(
+    ctx: &Ctx,
     addr: &Address,
     signed: &Signed<B>,
 ) -> Result<bool> {
     let pk_storage_key = pk_key(addr);
-    let pk = match read_bytes_pre(&pk_storage_key.to_string()) {
+    let pk = match ctx.read_bytes_pre(&pk_storage_key).unwrap() {
         Some(bytes) => bytes,
         None => return Err(eyre!("{} had no associated public key", VP_NAME)),
     };
@@ -176,7 +179,8 @@ mod test {
         vp::vp_host_env,
     };
     use namada_vp_prelude::{
-        address, key::RefTo, storage, token::Amount, Address, BTreeSet, BorshSerialize, Signed,
+        address, key::RefTo, storage, storage_api::StorageWrite, token::Amount, Address, BTreeSet,
+        BorshSerialize, Signed,
     };
     use shared::multitoken;
 
@@ -200,7 +204,7 @@ mod test {
 
         let vp_owner = address::testing::established_address_1();
         let user = address::testing::established_address_2();
-        let token = address::xan();
+        let token = address::nam();
         // allowance must be enough to cover the gas costs of any txs made in this test
         let allowance = Amount::from(10_000_000);
 
@@ -217,13 +221,20 @@ mod test {
             amount: Amount::from(50_000_000),
         };
         vp_host_env::init_from_tx(vp_owner.clone(), tx_env, |_| {
-            tx_host_env::write(mint.balance_key().to_string(), Amount::from(50_000_000));
-            tx_host_env::write(mint.supply_key().to_string(), Amount::from(50_000_000));
+            tx_host_env::ctx()
+                .write(&mint.balance_key(), Amount::from(50_000_000))
+                .unwrap();
+            tx_host_env::ctx()
+                .write(&mint.supply_key(), Amount::from(50_000_000))
+                .unwrap();
+            // let arbitrary_key = Key::parse("some arbitary key segment").unwrap();
             let other = storage::Key::from_str(&format!("#{}", vp_owner.encode()))
                 .unwrap()
                 .push(&"some arbitary key segment".to_string())
                 .unwrap();
-            tx_host_env::write(other.to_string(), "some arbitrary value");
+            tx_host_env::ctx()
+                .write(&other, "some arbitrary value")
+                .unwrap();
         });
 
         let vp_env = vp_host_env::take();
@@ -237,11 +248,13 @@ mod test {
         let verifiers: BTreeSet<Address> = BTreeSet::default();
         vp_host_env::set(vp_env);
         assert!(!validate_tx(
+            vp_host_env::ctx(),
             tx.data.unwrap(),
             vp_owner,
             keys_changed,
             verifiers
-        ));
+        )
+        .unwrap());
     }
 
     #[test]
@@ -250,7 +263,7 @@ mod test {
 
         let vp_owner = address::testing::established_address_1();
         let user = address::testing::established_address_2();
-        let token = address::xan();
+        let token = address::nam();
         // allowance must be enough to cover the gas costs of any txs made in this test
         let allowance = Amount::from(10_000_000);
 
@@ -267,8 +280,12 @@ mod test {
             amount: Amount::from(50_000_000),
         };
         vp_host_env::init_from_tx(vp_owner.clone(), tx_env, |_| {
-            tx_host_env::write(mint.balance_key().to_string(), Amount::from(50_000_000));
-            tx_host_env::write(mint.supply_key().to_string(), Amount::from(50_000_000));
+            tx_host_env::ctx()
+                .write(&mint.balance_key(), Amount::from(50_000_000))
+                .unwrap();
+            tx_host_env::ctx()
+                .write(&mint.supply_key(), Amount::from(50_000_000))
+                .unwrap();
         });
 
         let vp_env = vp_host_env::take();
@@ -282,10 +299,12 @@ mod test {
         let verifiers: BTreeSet<Address> = BTreeSet::default();
         vp_host_env::set(vp_env);
         assert!(validate_tx(
+            vp_host_env::ctx(),
             tx.data.unwrap(),
             vp_owner,
             keys_changed,
             verifiers
-        ));
+        )
+        .unwrap());
     }
 }

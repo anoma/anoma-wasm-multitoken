@@ -1,13 +1,12 @@
 use eyre::Result;
-use namada_tx_prelude::{token::Amount, write, Key};
+use namada_tx_prelude::{storage::Key, token::Amount, Ctx, StorageWrite};
 
 use crate::read;
 
 /// Reads the `Amount` from key, applies update then writes it back
-pub fn amount(key: &Key, update: impl Fn(&mut Amount)) -> Result<Amount> {
-    let key = key.to_string();
-    let mut amount = read::amount(&key)?;
+pub fn amount(ctx: &mut Ctx, key: &Key, update: impl Fn(&mut Amount)) -> Result<Amount> {
+    let mut amount = read::amount(ctx, key)?;
     update(&mut amount);
-    write(&key, amount);
+    ctx.write(key, amount).unwrap();
     Ok(amount)
 }

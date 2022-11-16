@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use namada_tx_prelude::Key;
+use namada_tx_prelude::storage::Key;
 
 pub const BALANCE_KEY_SEGMENT: &str = "balance";
 pub const SUPPLY_KEY_SEGMENT: &str = "supply";
