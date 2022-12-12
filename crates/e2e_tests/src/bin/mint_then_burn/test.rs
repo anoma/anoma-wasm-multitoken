@@ -57,12 +57,12 @@ pub(crate) fn run(
 
     let balance: Amount = client.query_bytes(&balance_key)?;
     if balance != expected {
-        eprintln!("balance: got {}, wanted {}", balance, expected);
+        eprintln!("balance: got {balance}, wanted {expected}");
         return Ok(false);
     }
     let supply: Amount = client.query_bytes(&supply_key)?;
     if supply != expected {
-        eprintln!("supply: got {}, wanted {}", supply, expected);
+        eprintln!("supply: got {supply}, wanted {expected}");
         return Ok(false);
     }
 
@@ -75,12 +75,12 @@ pub(crate) fn run(
 
     let balance: Amount = client.query_bytes(&balance_key)?;
     if balance != expected {
-        eprintln!("balance: got {}, wanted {}", balance, expected);
+        eprintln!("balance: got {balance}, wanted {expected}");
         return Ok(false);
     }
     let supply: Amount = client.query_bytes(&supply_key)?;
     if supply != expected {
-        eprintln!("supply: got {}, wanted {}", supply, expected);
+        eprintln!("supply: got {supply}, wanted {expected}");
         return Ok(false);
     }
 

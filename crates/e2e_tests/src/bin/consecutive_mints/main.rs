@@ -50,7 +50,7 @@ fn main() {
             }
         }
         Err(err) => {
-            eprintln!("Error while running test: {:?}", err);
+            eprintln!("Error while running test: {err:?}");
             std::process::exit(1)
         }
     };

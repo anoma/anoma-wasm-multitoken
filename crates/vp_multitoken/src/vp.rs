@@ -9,7 +9,7 @@ use shared::{multitoken, signed};
 const VP_NAME: &str = "vp_multitoken";
 
 fn log(msg: &str) {
-    log_string(format!("[{}] {}", VP_NAME, msg))
+    log_string(format!("[{VP_NAME}] {msg}"))
 }
 
 #[validity_predicate]
@@ -31,8 +31,8 @@ fn validate_tx(
     match validate_tx_aux(ctx, tx_data, addr, keys_changed, verifiers) {
         Ok(result) => Ok(result),
         Err(err) => {
-            log(&format!("ERROR: {:?}", err));
-            panic!("{:?}", err); // TODO: don't panic
+            log(&format!("ERROR: {err:?}"));
+            panic!("{err:?}"); // TODO: don't panic
         }
     }
 }
@@ -74,8 +74,8 @@ fn validate_tx_aux(
             }
 
             let (balance_pre, balance_post) = crate::read::amount(ctx, &balance_key)?;
-            log(&format!("pre-existing balance - {}", balance_pre));
-            log(&format!("new balance - {}", balance_post));
+            log(&format!("pre-existing balance - {balance_pre}"));
+            log(&format!("new balance - {balance_post}"));
 
             let mut balance_calculated = balance_pre;
             balance_calculated.receive(&mint.amount);
@@ -86,8 +86,8 @@ fn validate_tx_aux(
             }
 
             let (supply_pre, supply_post) = crate::read::amount(ctx, &supply_key)?;
-            log(&format!("pre-existing supply - {}", supply_pre));
-            log(&format!("new supply - {}", supply_post));
+            log(&format!("pre-existing supply - {supply_pre}"));
+            log(&format!("new supply - {supply_post}"));
 
             let mut supply_calculated = supply_pre;
             supply_calculated.receive(&mint.amount);
@@ -122,8 +122,8 @@ fn validate_tx_aux(
             }
 
             let (balance_pre, balance_post) = crate::read::amount(ctx, &balance_key)?;
-            log(&format!("pre-existing balance - {}", balance_pre));
-            log(&format!("new balance - {}", balance_post));
+            log(&format!("pre-existing balance - {balance_pre}"));
+            log(&format!("new balance - {balance_post}"));
 
             let mut balance_calculated = balance_pre;
             balance_calculated.spend(&burn.amount);
@@ -134,8 +134,8 @@ fn validate_tx_aux(
             }
 
             let (supply_pre, supply_post) = crate::read::amount(ctx, &supply_key)?;
-            log(&format!("pre-existing supply - {}", supply_pre));
-            log(&format!("new supply - {}", supply_post));
+            log(&format!("pre-existing supply - {supply_pre}"));
+            log(&format!("new supply - {supply_post}"));
 
             let mut supply_calculated = supply_pre;
             supply_calculated.spend(&burn.amount);

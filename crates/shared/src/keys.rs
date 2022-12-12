@@ -15,7 +15,7 @@ pub fn balance(
     token_id: &str,
     owner_addr: &str,
 ) -> Key {
-    Key::from_str(&format!("#{}", multitoken_addr))
+    Key::from_str(&format!("#{multitoken_addr}"))
         .unwrap()
         .push(&multitoken_path.to_owned())
         .unwrap()
@@ -23,12 +23,12 @@ pub fn balance(
         .unwrap()
         .push(&BALANCE_KEY_SEGMENT.to_owned())
         .unwrap()
-        .push(&format!("#{}", owner_addr))
+        .push(&format!("#{owner_addr}"))
         .unwrap()
 }
 
 pub fn supply(multitoken_addr: &str, multitoken_path: &str, token_id: &str) -> Key {
-    Key::from_str(&format!("#{}", multitoken_addr))
+    Key::from_str(&format!("#{multitoken_addr}"))
         .unwrap()
         .push(&multitoken_path.to_owned())
         .unwrap()

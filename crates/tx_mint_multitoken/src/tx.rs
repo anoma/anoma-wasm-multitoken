@@ -5,14 +5,14 @@ use shared::{multitoken, signed, update};
 const TX_NAME: &str = "tx_mint_multitoken";
 
 fn log(msg: &str) {
-    log_string(format!("[{}] {}", TX_NAME, msg))
+    log_string(format!("[{TX_NAME}] {msg}"))
 }
 
 #[transaction]
 fn apply_tx(ctx: &mut Ctx, tx_data: Vec<u8>) -> TxResult {
     if let Err(err) = apply_tx_aux(ctx, tx_data) {
-        log(&format!("ERROR: {:?}", err));
-        panic!("{:?}", err) // TODO: return an error instead of panicking
+        log(&format!("ERROR: {err:?}"));
+        panic!("{err:?}") // TODO: return an error instead of panicking
     }
     Ok(())
 }
@@ -29,16 +29,16 @@ fn apply_tx_aux(ctx: &mut Ctx, tx_data: Vec<u8>) -> Result<()> {
 
     let balance_key = mint.balance_key();
     update::amount(ctx, &balance_key, |amount| {
-        log(&format!("existing value for {} is {}", balance_key, amount));
+        log(&format!("existing value for {balance_key} is {amount}"));
         amount.receive(&mint.amount);
-        log(&format!("new value for {} will be {}", balance_key, amount));
+        log(&format!("new value for {balance_key} will be {amount}"));
     })?;
 
     let supply_key = mint.supply_key();
     update::amount(ctx, &supply_key, |amount| {
-        log(&format!("existing value for {} is {}", supply_key, amount));
+        log(&format!("existing value for {supply_key} is {amount}"));
         amount.receive(&mint.amount);
-        log(&format!("new value for {} will be {}", supply_key, amount));
+        log(&format!("new value for {supply_key} will be {amount}"));
     })?;
 
     Ok(())
@@ -104,7 +104,7 @@ mod tests {
         let result = apply_tx_aux(tx_host_env::ctx(), tx_data);
 
         if let Err(err) = result {
-            panic!("apply_tx_aux error: {:?}", err);
+            panic!("apply_tx_aux error: {err:?}");
         }
         let env = tx_host_env::take();
         assert_eq!(env.all_touched_storage_keys().len(), 2);
