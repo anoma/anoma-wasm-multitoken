@@ -1,4 +1,4 @@
-use namada::{proto::Signed, types::token::Amount};
+use namada_core::{proto::Signed, types::token::Amount};
 
 use eyre::Result;
 use shared::{keys, multitoken};

@@ -209,7 +209,7 @@ mod test {
         let allowance = Amount::from(10_000_000);
 
         tx_env.spawn_accounts([&vp_owner, &user, &token]);
-        tx_env.credit_tokens(&user, &token, allowance);
+        tx_env.credit_tokens(&user, &token, None, allowance);
         let privileged_sk = random_key();
         tx_env.write_public_key(&vp_owner, &privileged_sk.ref_to());
 
@@ -268,7 +268,7 @@ mod test {
         let allowance = Amount::from(10_000_000);
 
         tx_env.spawn_accounts([&vp_owner, &user, &token]);
-        tx_env.credit_tokens(&user, &token, allowance);
+        tx_env.credit_tokens(&user, &token, None, allowance);
         let privileged_sk = random_key();
         tx_env.write_public_key(&vp_owner, &privileged_sk.ref_to());
 
