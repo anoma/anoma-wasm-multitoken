@@ -2,11 +2,13 @@ version: "3.9"
 services:
   ledger:
     build: .
+    platform: linux/amd64
     ports:
       - '127.0.0.1:8123:8123'
       - '127.0.0.1:26657:26657'
   adhoc:
     build: .
+    platform: linux/amd64
     environment:
       &namada_env
       NAMADA_NETWORK_CONFIGS_SERVER: http://ledger:8123
@@ -20,6 +22,7 @@ services:
       - ledger
   testrunner:
     build: .
+    platform: linux/amd64
     environment: *namada_env
     command:
       - /bin/bash
