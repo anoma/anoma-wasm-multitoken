@@ -40,10 +40,11 @@ tower-abci = { git = "https://github.com/heliaxdev/tower-abci.git", rev = "fcc00
 funty = { git = "https://github.com/bitvecto-rs/funty/", rev = "7ef0d890fbcd8b3def1635ac1a877fc298488446" }
 
 [patch."https://github.com/anoma/namada"]
-namada = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.10.1" }
-namada_tests = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.10.1" }
-namada_tx_prelude = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.10.1" }
-namada_vp_prelude = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.10.1" }
+namada = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.11.0" }
+namada_core = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.11.0" }
+namada_tests = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.11.0" }
+namada_tx_prelude = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.11.0" }
+namada_vp_prelude = { git = "https://github.com/anoma/namada?branch=main", tag = "v0.11.0" }
 
 [profile.dev]
 # smaller and faster wasm (https://rustwasm.github.io/book/reference/code-size.html#compiling-with-link-time-optimizations-lto)

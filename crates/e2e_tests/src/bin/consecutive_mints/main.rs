@@ -5,7 +5,7 @@ use test_runner::wallet;
 
 mod test;
 
-const TENDERMINT_RPC_ENV_VAR: &str = "ANOMA_LEDGER_ADDRESS";
+const TENDERMINT_RPC_ENV_VAR: &str = "NAMADA_LEDGER_ADDRESS";
 
 fn main() {
     chain::join();
@@ -50,7 +50,7 @@ fn main() {
             }
         }
         Err(err) => {
-            eprintln!("Error while running test: {:?}", err);
+            eprintln!("Error while running test: {err:?}");
             std::process::exit(1)
         }
     };

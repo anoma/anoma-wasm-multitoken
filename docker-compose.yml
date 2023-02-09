@@ -10,9 +10,9 @@ services:
     build: .
     platform: linux/amd64
     environment:
-      &anoma_env
-      ANOMA_NETWORK_CONFIGS_SERVER: http://ledger:8123
-      ANOMA_LEDGER_ADDRESS: ledger:26657
+      &namada_env
+      NAMADA_NETWORK_CONFIGS_SERVER: http://ledger:8123
+      NAMADA_LEDGER_ADDRESS: ledger:26657
     command:
       - /bin/bash
       - -c
@@ -23,7 +23,7 @@ services:
   testrunner:
     build: .
     platform: linux/amd64
-    environment: *anoma_env
+    environment: *namada_env
     command:
       - /bin/bash
       - -c
